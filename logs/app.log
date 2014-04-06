@@ -1,0 +1,14 @@
+[2014-04-05 12:17:14.596] [INFO] normal - GET /
+[2014-04-05 12:17:14.856] [WARN] normal - GET /stylesheets/bootstrap.min.css
+[2014-04-05 12:17:14.864] [WARN] normal - GET /javascripts/jquery-1.9.1.min.js
+[2014-04-05 12:17:14.865] [WARN] normal - GET /javascripts/bootstrap.min.js
+[2014-04-05 12:17:14.866] [WARN] normal - GET /javascripts/doctor.js
+[2014-04-05 12:17:14.867] [WARN] normal - GET /javascripts/jquery.json-2.4.js
+[2014-04-05 12:17:20.934] [INFO] normal - GET /home
+[2014-04-05 12:17:21.103] [WARN] normal - GET /stylesheets/bootstrap.min.css
+[2014-04-05 12:17:21.104] [WARN] normal - GET /javascripts/jquery-1.9.1.min.js
+[2014-04-05 12:17:21.111] [WARN] normal - GET /javascripts/bootstrap.min.js
+[2014-04-05 12:17:21.112] [WARN] normal - GET /javascripts/doctor.js
+[2014-04-05 12:17:21.113] [WARN] normal - GET /javascripts/jquery.json-2.4.js
+[2014-04-05 12:17:23.009] [INFO] normal - GET /doctor/query/all
+[2014-04-05 12:17:30.030] [WARN] normal - GET /doctor/query/all

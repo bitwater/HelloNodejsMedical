@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<% include header.ejs %>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="input-group">
+                <a class="btn btn-link" href="/doctor/add">新增</a>
+                <input id="input_query" type="text" class="form-control">
+                <span class="input-group-btn">
+                <button id="query" class="btn btn-success" type="button">查询</button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <!--<a class="btn btn-primary" href="/doctor/qry">新增</a>-->
+</div>
+<div>
+    <legend>医生基本信息</legend>
+    <table class="table table-striped" id="table">
+        <thead>
+        <tr>
+            <th>姓名</th>
+            <th>职称</th>
+            <th>地区</th>
+            <th>电话号码</th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>
+    </table>
+</div>
+<!--<a class="btn btn-primary" href="/logout">退出</a>-->
+<% include footer.ejs %>

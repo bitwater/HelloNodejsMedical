@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<% include header.ejs %>
+<div class="container-fluid">
+    <form class="form-horizontal" method="post">
+        <fieldset>
+            <legend>用户登录</legend>
+            <div class="control-group">
+                <label class="control-label" for="username">用户名</label>
+
+                <div class="controls">
+                    <input type="text" class="input-xlarge" id="username" name="username">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="password">密码</label>
+
+                <div class="controls">
+                    <input type="password" class="input-xlarge" id="password" name="password">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">登录</button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<% include footer.ejs %>

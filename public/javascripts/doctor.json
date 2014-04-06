@@ -1,0 +1,14 @@
+{
+    "name": "王大夫",
+    "prof_title": "主任医师",
+    "telnumber": "13698809877",
+    "hospital": "上海儿童医学中心",
+    "department": "内科",
+    "specialty": "对小儿复杂先心病的手术治疗和深低温体外循环心、脑、肺保护具有丰富的临床经验",
+    "community": "福祥社区",
+    "images":{
+        "coverBig":"/img/doctor/1_big.jpg",
+        "coverSmall":"/img/doctor/1_small.jpg"
+    }
+
+}

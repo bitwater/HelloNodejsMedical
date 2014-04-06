@@ -1,0 +1,94 @@
+<% include header.ejs %>
+<form class="form-horizontal" method="post">
+    <fieldset>
+        <legend>医生基本信息(必填)</legend>
+        <div class="control-group">
+            <label class="control-label" for="name">姓名</label>
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="name" name="name">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="city">城市/地区</label>
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="city" name="city">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="telnumber">电话号码</label>
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="telnumber" name="telnumber">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="prof_title">职称</label>
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="prof_title" name="prof_title">
+            </div>
+        </div>
+        <legend>医生高级信息</legend>
+        <div class="control-group">
+            <label class="control-label" for="hospital">所属医院</label>
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="hospital" name="hospital">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="specialty">擅长科目</label>
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="specialty" name="specialty">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="community">所在社区</label>
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="community" name="community">
+            </div>
+        </div>
+       <!-- <div class="control-group">
+            <label class="control-label" for="select01">Select list</label>
+
+            <div class="controls">
+                <select id="select01">
+                    <option>something</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
+        </div>-->
+        <!--<div class="control-group">-->
+            <!--<label class="control-label" for="multiSelect">Multicon-select</label>-->
+
+            <!--<div class="controls">-->
+                <!--<select multiple="multiple" id="multiSelect">-->
+                    <!--<option>1</option>-->
+                    <!--<option>2</option>-->
+                    <!--<option>3</option>-->
+                    <!--<option>4</option>-->
+                    <!--<option>5</option>-->
+                <!--</select>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="control-group">
+            <label class="control-label" for="images">上传头像</label>
+
+            <div class="controls">
+                <input class="input-file" id="images" type="file" name="images">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="introduction">简介</label>
+
+            <div class="controls">
+                <textarea class="input-xlarge" id="introduction" rows="3" name="introduction"></textarea>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">提交</button>
+            <a class="btn btn-info" href="/home">取消</a>
+        </div>
+    </fieldset>
+</form>
+<% include footer.ejs %>
