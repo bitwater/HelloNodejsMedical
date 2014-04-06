@@ -9,7 +9,7 @@ HelloNodejsMedical
 
 ==================
 简要说明：
-app.js是整个应用的启动文件。
+app.js是整个应用的启动入口。
 server.js是系统服务配置和创建的地方。
 conf.js中存放着系统的配置信息。
 mongodb.js是与MongoDB相关的内容。
