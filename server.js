@@ -11,20 +11,9 @@ var router = require('./routes/router');
 var http = require('http');
 var path = require('path');
 var ejs = require('ejs');
-//var log4js = require('./log4js');
-var log4js = require('log4js');
-log4js.configure({
-    appenders: [
-        { type: 'console' },{
-            type: 'file',
-            filename: './logs/app.log',
-            maxLogSize: 1024,
-            backups:4,
-            category: 'normal'
-        }
-    ],
-    replaceConsole: true
-});
+var log4js = require('./log4js');
+//var log4js = require('log4js');
+var logger = log4js.getLogger('server');
 var SessionStore = require('session-mongoose')(express);
 var store = new SessionStore({url: conf.sessionDBUrl, interval: 120000});
 
@@ -45,9 +34,7 @@ app.configure(function () {
     app.use(express.cookieSession({secret: 'norway'}));
 
     // log4j相关配置
-//    var logger = log4js.logger(this);
-    var logger = log4js.getLogger(this);
-    app.use(log4js.connectLogger(logger, {level: 'auto', format:':method :url'}));
+    log4js.use(app, logger);
 
 
     // session设置
@@ -93,6 +80,6 @@ app.configure('production', function () {
 // 启动及端口
 exports.start = function(){
     http.createServer(app).listen(conf.port, function () {
-        console.log('Express server listening on port ' + app.get('port'));
+        logger.info('Express server listening on port ' + app.get('port'));
     });
 }

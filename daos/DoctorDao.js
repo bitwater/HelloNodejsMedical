@@ -3,8 +3,8 @@
  *
  * 根据mongoose模型封装CRUD操作
  */
-var util = require('util');
 var Doctor = require('../models/Doctor');
+var logger = require('../log4js').getLogger('daos.DoctorDao');
 
 var DoctorDAO = function () {
 };
@@ -13,7 +13,7 @@ DoctorDAO.prototype.add = function (obj, callback) {
     var instance = new Doctor(obj);
     instance.save(function (err) {
         if (err) {
-            console.log("Fail save User" + err);
+            logger.error("Fail save doctor!" + err);
             callback(err);
         } else {
             callback(null);
@@ -23,9 +23,10 @@ DoctorDAO.prototype.add = function (obj, callback) {
 
 DoctorDAO.prototype.update = function (id, newdoc, callback) {
     findById(id, function (err, doc) {
-        if (err)
+        if (err) {
+            logger.error("Fail find doctor!" + err);
             callback(err);
-        else {
+        } else {
             doc.name = newdoc.name;
             doc.city = newdoc.city;
             doc.hospital = newdoc.hospital;
@@ -37,7 +38,7 @@ DoctorDAO.prototype.update = function (id, newdoc, callback) {
             doc.introduction = newdoc.introduction;
             doc.save(function (err) {
                 if (err) {
-                    console.log('FATAL ' + err);
+                    logger.error("Fail update doctor!" + err);
                     callback(err);
                 } else
                     callback(null);
@@ -48,8 +49,10 @@ DoctorDAO.prototype.update = function (id, newdoc, callback) {
 
 DoctorDAO.prototype.delete = function (id, callback) {
     findById(id, function (err, doc) {
-        if (err)
+        if (err) {
+            logger.error("Fail delete doctor!" + err);
             callback(err);
+        }
         else {
             console.log(doc);
             doc.remove();
@@ -69,7 +72,7 @@ DoctorDAO.prototype.findById = function (id, callback) {
 DoctorDAO.prototype.findByName = function (name, callback) {
     Doctor.findOne({name: name}, function (err, doc) {
         if (err) {
-            console.log('FATAL ' + err);
+            logger.error("Fail find doctor!" + err);
             callback(err, null);
         }
         callback(null, doc);
@@ -80,7 +83,7 @@ DoctorDAO.prototype.findByName = function (name, callback) {
 DoctorDAO.prototype.findLikeName = function (query, callback) {
     Doctor.find(query, function (err, doc) {
         if (err) {
-            console.log('FATAL ' + err);
+            logger.error("Fail findLikeName doctor!" + err);
             callback(err, null);
         }
         callback(null, doc);
@@ -90,7 +93,7 @@ DoctorDAO.prototype.findLikeName = function (query, callback) {
 DoctorDAO.prototype.forAll = function (doEach, done) {
     Doctor.find({}, function (err, docs) {
         if (err) {
-            console.log('FATAL ' + err);
+            logger.error("Fail forAll doctor!" + err);
             done(err, null);
         }
         docs.forEach(function (doc) {
@@ -103,7 +106,7 @@ DoctorDAO.prototype.forAll = function (doEach, done) {
 var findById = function (id, callback) {
     Doctor.findOne({_id: id}, function (err, doc) {
         if (err) {
-            console.log('FATAL ' + err);
+            logger.error("Fail findById doctor!" + err);
             callback(err, null);
         }
         callback(null, doc);

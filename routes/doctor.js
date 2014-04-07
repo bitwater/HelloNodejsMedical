@@ -3,9 +3,10 @@
  */
 
 var doctor = require('../daos/DoctorDao');
+var logger = require('../log4js').getLogger('routes.doctor');
 
 exports.showDoctor = function (req, res) {
-    console.log(req.params.id);
+    logger.info(req.params.id);
     var id = req.params.id;
     if (id) {
         // 展示该医生的详细信息
@@ -20,18 +21,18 @@ exports.showDoctor = function (req, res) {
 
     } else {
         // 医生信息首页
-       /* return res.render('doctor', {
-            title: '医生信息',
-            label: '医生:',
-            doctor: false
-        });*/
+        /* return res.render('doctor', {
+         title: '医生信息',
+         label: '医生:',
+         doctor: false
+         });*/
 
         return res.redirect('/home');
     }
 };
 
 exports.addDoctor = function (req, res) {
-    console.log(req.params.id);
+    logger.info(req.params.id);
     if (req.params.id) {
         // 更新
         return res.render('doctor', {
@@ -50,7 +51,7 @@ exports.addDoctor = function (req, res) {
 };
 
 exports.doAddDoctor = function (req, res) {
-    console.log(req.body);
+    logger.info(req.body);
     var obj = req.body;
     var id = req.params.id;
 
@@ -63,7 +64,7 @@ exports.doAddDoctor = function (req, res) {
                 return res.redirect('/home');
             }
         });
-    }else{
+    } else {
         doctor.add(obj, function (err) {
             if (err) {
                 req.session.error = '添加医生信息失败,请重试';
@@ -78,17 +79,19 @@ exports.doAddDoctor = function (req, res) {
 
 exports.findDoctorByName = function (req, res) {
     var name = req.params.name;
-    console.log(name);
-    var query={};
-    if(name) {
-        query['name']=new RegExp(name);//模糊查询参数
+    logger.info(name);
+    // 构造模糊查询query对象
+    var query = {};
+    if (name) {
+        //模糊查询参数,使用正则表达式
+        query['name'] = new RegExp(name);
     }
     doctor.findLikeName(query, function (err, obj) {
         return res.send(obj);
     });
 }
 
-exports.deleteDoctor = function (req, res){
+exports.deleteDoctor = function (req, res) {
     var id = req.params.id;
     doctor.delete(id, function (err, obj) {
         if (err) {
@@ -101,7 +104,7 @@ exports.deleteDoctor = function (req, res){
 }
 
 // 查找所有医生信息,后续需要做limit限制
-exports.findAllDoctor = function (req, res){
+exports.findAllDoctor = function (req, res) {
     doctor.findAll(function (err, obj) {
         if (err) {
             req.session.error = '查找医生信息失败,请重试';

@@ -1,5 +1,6 @@
 var crypto = require('crypto');
 var User = require('../daos/UserDao');
+var logger = require('../log4js').getLogger('routes.user');
 
 exports.home = function (req, res) {
     res.render('home', {title: 'Home', user: req.session.user});
@@ -12,18 +13,18 @@ exports.login = function (req, res) {
 
 exports.doLogin = function (req, res) {
     // 生成口令的散列值
-    console.log(req.body.content);
+    logger.info(req.body.content);
     var md5 = crypto.createHash('md5');
     var password = md5.update(req.body.password).digest('base64');
 
     // 根据用户名查找
     User.findByName(req.body.username, function(err, user) {
+        logger.info("find this user" + user);
         if (!user) {
             req.session.error = '用户不存在';
             return res.redirect('/login');
         }
 
-        console.log(user);
         if (user.password !== password) {
             req.session.error = '用户名或密码不正确';
             return res.redirect('/login');
