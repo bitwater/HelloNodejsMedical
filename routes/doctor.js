@@ -105,8 +105,18 @@ exports.deleteDoctor = function (req, res) {
 
 // 查找所有医生信息,后续需要做limit限制
 exports.findAllDoctor = function (req, res) {
-    doctor.findAll(function (err, obj) {
+    /*doctor.findAll(function (err, obj) {
         if (err) {
+            req.session.error = '查找医生信息失败,请重试';
+        } else {
+            //req.session.success = '查找医生信息成功';
+            return res.send(obj);
+        }
+    });*/
+
+    // 尝试promise
+    doctor.findAll(function(obj) {
+        if (!obj) {
             req.session.error = '查找医生信息失败,请重试';
         } else {
             //req.session.success = '查找医生信息成功';
@@ -114,4 +124,3 @@ exports.findAllDoctor = function (req, res) {
         }
     });
 }
-

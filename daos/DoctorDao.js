@@ -5,6 +5,7 @@
  */
 var Doctor = require('../models/Doctor');
 var logger = require('../log4js').getLogger('daos.DoctorDao');
+var Q = require('q');
 
 var DoctorDAO = function () {
 };
@@ -62,7 +63,16 @@ DoctorDAO.prototype.delete = function (id, callback) {
 }
 
 DoctorDAO.prototype.findAll = function (callback) {
-    Doctor.find({}, callback);
+//    Doctor.find({}, function(err ,obj){
+//        if (err){
+//            logger.error("Fail find all!" + err);
+//            callback(err, null);
+//        }
+//        callback(null, obj);
+//    });
+    // 尝试promise
+    logger.info("promise find all");
+    findPromise({}).then(callback, logger.error);
 }
 
 DoctorDAO.prototype.findById = function (id, callback) {
@@ -113,5 +123,7 @@ var findById = function (id, callback) {
     });
 }
 
+var findPromise = Q.denodeify(Doctor.find.bind(Doctor));
+//var findPromise = Q.nbind(Doctor.find, Doctor);
 
 module.exports = new DoctorDAO();
