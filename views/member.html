@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>新增会员信息</title>
+    <style type="text/css">
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+    </style>
+    <!-- Booststrap -->
+    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet" media="screen">
+</head>
+
+<body screen_capture_injected="true">
+
+<ul class="nav nav-pills" id="myTab">
+    <li class="active"><a href="#basic">基本</a></li>
+    <li><a href="#person">个人</a></li>
+    <li><a href="#medical">医疗</a></li>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="home">
+            <p>基本</p>
+        </div>
+        <div class="tab-pane fade" id="person">
+            <p>个人</p>
+        </div>
+        <div class="tab-pane fade" id="medical">
+            <p>医疗</p>
+        </div>
+    </div>
+</ul>
+
+
+
+<form class="form-horizontal" method="post">
+    <fieldset>
+        <legend>会员基本信息(*)</legend>
+        <div class="control-group">
+            <label class="control-label" for="name">姓名</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="name" name="name">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">性别</label>
+            <div class="controls">
+                <label class="radio" for="sex">
+                    <input type="radio" name="sex" id="sex" checked>
+                    男</label>
+                <label class="radio" for="sex">
+                    <input type="radio" name="sex" id="female">
+                    女</label>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="city">城市/地区</label>
+            <div class="controls" id="city" name="city">
+                <select>
+                    <option>北京</option>
+                    <option>上海</option>
+                    <option>广州</option>
+                    <option>深圳</option>
+                    <option>福州</option>
+                    <option>厦门</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="telnumber">手机号</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="telnumber" name="telnumber">
+            </div>
+        </div>
+        <!--后可优化为时间选择器-->
+        <div class="control-group">
+            <label class="control-label" for="birthday">出生年月</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="birthday" name="birthday">
+            </div>
+        </div>
+
+        <legend>会员个人信息</legend>
+        <div class="control-group">
+            <label class="control-label" for="prcIdCard">身份证号码</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="prcIdCard" name="prcIdCard">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="images">上传头像</label>
+
+            <div class="controls">
+                <input class="form-control" id="images" type="file" name="images">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="height">身高</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="height" name="height">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="weight">体重</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="weight" name="weight">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="bloodType">血型</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="bloodType" name="bloodType">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="familyAddress">家庭住址</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="familyAddress" name="familyAddress">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="workUnit">工作单位</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="workUnit" name="workUnit">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="workAddress">工作单位地址</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="workAddress" name="workAddress">
+            </div>
+        </div>
+
+        <legend>会员医疗信息</legend>
+        <div class="control-group">
+            <label class="control-label" for="homeDoctorName">家庭医生姓名</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="homeDoctorName" name="homeDoctorName">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="medicineID">医保号</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="medicineID" name="medicineID">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="slefHistory">个人病史</label>
+
+            <div class="controls">
+                <textarea class="form-control" id="slefHistory" rows="3" name="slefHistory"></textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="familyHistory">家族病史</label>
+
+            <div class="controls">
+                <textarea class="form-control" id="familyHistory" rows="3" name="familyHistory"></textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="allergyHistory">过敏病史</label>
+
+            <div class="controls">
+                <textarea class="form-control" id="allergyHistory" rows="3" name="allergyHistory"></textarea>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="insuranceCenCode">保险中心号码</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="insuranceCenCode" name="insuranceCenCode">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="insuranceCenName">保险中心名称</label>
+            <div class="controls">
+                <input type="text" class="form-control" id="insuranceCenName" name="insuranceCenName">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">提交</button>
+            <a class="btn btn-info" href="/home">取消</a>
+        </div>
+    </fieldset>
+</form>
+<hr>
+
+<script src="/javascripts/jquery-1.9.1.min.js"></script>
+<script src="/javascripts/bootstrap.min.js"></script>
+<script src="/javascripts/jquery.json-2.4.js"></script>
+<script src="/javascripts/member.js"></script>
+
+</body>
+</html>
+

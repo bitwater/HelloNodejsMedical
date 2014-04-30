@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<% include header.ejs %>
+<% include header.html %>
 <div class="container">
     <div class="row">
         <div class="col-lg-6">
             <div class="input-group">
-                <a class="btn btn-link" href="/doctor/add">新增</a>
+                <a class="btn btn-link" href="/member/add">新增会员</a>
+                <a class="btn btn-link" href="/member/show">查看会员</a>
+                <a class="btn btn-link" href="/doctor/add">新增医生</a>
                 <input id="input_query" type="text" class="form-control">
                 <span class="input-group-btn">
                 <button id="query" class="btn btn-success" type="button">查询</button>
@@ -31,4 +33,4 @@
     </table>
 </div>
 <!--<a class="btn btn-primary" href="/logout">退出</a>-->
-<% include footer.ejs %>
+<% include footer.html %>

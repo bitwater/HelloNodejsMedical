@@ -3,9 +3,10 @@
  *
  * 路由控制模块
  */
-var index = require('./index')
+var index = require('./index');
 var doctor = require('./doctor');
 var user = require('./user');
+var member = require('./member');
 
 exports.routes = function(app){
     // 首页
@@ -46,6 +47,18 @@ exports.routes = function(app){
 
     // 删除
     app.get('/doctor/delete/:id', doctor.deleteDoctor);
+
+    // 会员
+    app.all('/member/add', authentication);
+    app.get('/member/add', member.addMember);
+    app.post('/member/add', member.doAddMember);
+    app.get('/member/add/:id', member.showMember);
+//    app.post('/member/add/:id', member.doAddDoctor);
+
+    app.get('/test', function(req, res){
+        res.render('test', {
+            title: '测试'});
+    });
 }
 
 // 认证访问控制

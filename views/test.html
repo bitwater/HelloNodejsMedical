@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<head>
+    <title>Stay Standalone</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <script src="/javascripts/stay_standalone.js" type="text/javascript"></script>
+</head>
+
+<body>
+
+<form class="form-horizontal" method="post">
+    <fieldset>
+        <legend>会员基本信息(*)</legend>
+        <div class="control-group">
+            <label class="control-label" for="name">姓名</label>
+
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="name" name="name">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">性别</label>
+
+            <div class="controls">
+                <label class="radio" for="sex">
+                    <input type="radio" name="sex" id="sex" checked>
+                    男</label>
+                <label class="radio" for="sex">
+                    <input type="radio" name="sex" id="female">
+                    女</label>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="city">城市/地区</label>
+
+            <div class="controls" id="city" name="city">
+                <select>
+                    <option>北京</option>
+                    <option>上海</option>
+                    <option>广州</option>
+                    <option>深圳</option>
+                    <option>福州</option>
+                    <option>厦门</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="telnumber">手机号</label>
+
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="telnumber" name="telnumber">
+            </div>
+        </div>
+        <!--后可优化为时间选择器-->
+        <div class="control-group">
+            <label class="control-label" for="birthday">出生年月</label>
+
+            <div class="controls">
+                <input type="text" class="input-xlarge" id="birthday" name="birthday">
+            </div>
+        </div>
+
+
+    </fieldset>
+</form>
+<ul>
+    <li><a href="http://google.com/">Remote Link (Google)</a></li>
+    <li><a href="javascript:alert('Awesome script is awesome')">JavaScript Link</a></li>
+    <li><a href="/">Local Link</a></li>
+    <li><a href="#amp">Local Anchor</a></li>
+</ul>
+</body>

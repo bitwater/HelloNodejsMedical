@@ -59,10 +59,10 @@ app.configure(function () {
     app.use(express.static(path.join(__dirname, 'public')));
     router.routes(app);
 
-    app.set('view engine', 'ejs');
+//    app.set('view engine', 'ejs');
     //ejs模板文件扩展为html文件
-    //app.engine(".html", ejs.__express);
-    //app.set("view engine", 'html');
+    app.engine(".html", ejs.__express);
+    app.set("view engine", 'html');
 });
 
 app.configure('development', function () {
