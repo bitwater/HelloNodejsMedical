@@ -4,18 +4,26 @@ log4js.configure({
     //控制台输出
     appenders: [
         { type: 'console' },{
-            type: 'file',
+            type: 'dateFile',
             filename: 'logs/app.log',
             maxLogSize: 1024,
             backups:4,
             category: 'normal'
-        }
+        },
+        {
+            type: "dateFile",
+            filename: 'logs/app.log',
+            pattern: "-yyyy-MM-dd",
+            alwaysIncludePattern: false,
+            maxLogSize: 1024*1024
+//            category: 'normal'
+        }//日期文件格式
     ],
-//    replaceConsole: true
-    replaceConsole: true,   //替换console.log  
-    levels: {
-        dateFileLog: 'INFO'
-    }
+
+    replaceConsole: true,   //替换console.log
+//    levels: {
+//        dateFileLog: 'INFO'
+//    }
 });
 
 exports.getLogger = function (name) {

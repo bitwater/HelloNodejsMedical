@@ -9,5 +9,5 @@ module.exports = {
     dbUrl: 'mongodb://localhost/medical',
     sessionDBUrl: 'mongodb://localhost/session',
     host: 'localhost',
-    port: 3000
+    port: 3003
 };

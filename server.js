@@ -14,6 +14,7 @@ var ejs = require('ejs');
 var log4js = require('./log4js');
 //var log4js = require('log4js');
 var logger = log4js.getLogger('server');
+logger.setLevel('INFO');
 var SessionStore = require('session-mongoose')(express);
 var store = new SessionStore({url: conf.sessionDBUrl, interval: 120000});
 
@@ -81,5 +82,6 @@ app.configure('production', function () {
 exports.start = function(){
     http.createServer(app).listen(conf.port, function () {
         logger.info('Express server listening on port ' + app.get('port'));
+        console.info('Express server listening on port ' + app.get('port'));
     });
 }
