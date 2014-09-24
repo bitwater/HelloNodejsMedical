@@ -4,3 +4,10 @@
   "error" : "xxxx"
 }
 </source>
+
+<div>
+{
+  "code" : xxx,
+  "error" : "xxxx"
+}
+</div>
