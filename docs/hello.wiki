@@ -16,3 +16,48 @@
   "code" : xxx,
   "error" : "xxxx"
 }
+<code>
+{
+  "name" : String,                  //必需,姓名
+  "sex" : String,                   //必需,性别
+  "avatar" : String,                //非必需,头像
+  "phoneNum" : String,              //必需,手机号,TODO:需保证是已验证后的手机号??
+  "alipayAccount" : String,         //必需,支付宝账户
+  "password" : String,              //必需,加密后的密码
+  "uuid" : String                   //必需,验证码UUID,需要确保验证码没有过期
+  "customerAgentId" : String,       //非必需,主任UUID
+  "customerAgentName" : String,     //非必需,主任姓名
+  "customerAgentPhoneNum" : String, //非必需,主任手机号
+}
+</code>
+* Response:
+<code>
+//成功 201
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+{
+  "name" : String,                  //必需,姓名
+  "sex" : String,                   //必需,性别
+  "avatar" : String,                //非必需,头像
+  "phoneNum" : String,              //必需,手机号,TODO:需保证是已验证后的手机号??
+  "alipayAccount" : String,         //必需,支付宝账户
+  "password" : String,              //必需,加密后的密码
+  "uuid" : String                   //必需,验证码UUID,需要确保验证码没有过期
+  "customerAgentId" : String,       //非必需,主任UUID
+  "customerAgentName" : String,     //非必需,主任姓名
+  "customerAgentPhoneNum" : String, //非必需,主任手机号
+}
+* Response:
+//成功 201
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
