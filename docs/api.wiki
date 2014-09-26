@@ -524,7 +524,7 @@ The payload JSON could be of one of the following data structures.
 
 '''A resource'''
 待订购的时间资源
-<code>
+<source>
 {
   "type" : 'r'                       //必需,care当前类型:'r'-resource 资源
   "price" : 100,                     //必需,资源定价
@@ -538,7 +538,7 @@ The payload JSON could be of one of the following data structures.
   "specialistAgentName" : String,    //必需,经纪人姓名
   "specialistAgentPhoneNum" : String //必需,经纪人手机号
 }
-</code>
+</source>
 
 '''A cheque'''
 待收款的支票
