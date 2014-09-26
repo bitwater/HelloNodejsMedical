@@ -1,0 +1,2449 @@
+= API Design =
+
+== Design Principles ==
+* RESTful - 统一操作资源的表述风格
+* Pure Data API - 资源就是数据，以数据为中心的设计，要与前端业务逻辑和交互动作"彻底"解耦
+* Data Model Abstraction - 对数据要有一定的抽象,不能完全绑定后端schema
+* 参考设计:
+   Parse API: https://www.parse.com/docs/rest
+   AVOS API: https://cn.avoscloud.com/docs/rest_api.html
+
+== Error Codes ==
+
+{|
+|'''Internal Code'''
+|'''Http Code'''
+|'''Error Code'''
+|'''Error message'''
+|-
+| SYS_DB_ERROR
+| 500
+| 9000
+| 数据库错误
+|-
+| CARE_UNTYPED  
+| 406  
+| 1000  
+| Care缺少type字段
+|-
+| CARE_WRONG_TYPED  
+| 406
+| 1001  
+| 无法识别的Car类型
+|-
+| CARE_MISSING_FIELDS  
+| 406  
+| 1002  
+| Care缺少字段
+|-
+| CARE_COMMENT_LOCKED
+| 406
+| 1003
+| 评论时间已锁定
+|-
+| CARE_NOT_FOUND
+| 406
+| 1004
+| 不存在该care资源
+|-
+| RESOURCE_INVALID
+| 406
+| 1005
+| 资源已被订购
+|-
+| RESOURCE_ILLEGAL_OP
+| 403
+| 1006
+| 对资源记录操作非法
+|-
+| TXN_WRONG_SECRET
+| 403
+| 3000
+| 禁止访问
+|-
+| TXN_MISSING_FIELDS
+| 406
+| 3001
+| 缺少字段
+|-
+| TXN_WRONG_FIELD_TYPE
+| 406
+| 3002
+| 字段类型错误，字段为
+|-
+| TXN_INSUFFICIENT_CASH_C
+| 406
+| 3003
+| 客户账户余额不足
+|-
+| TXN_INSUFFICIENT_CASH_B
+| 406
+| 3004
+| 医生账户余额不足
+|-
+| USER_NOT_FOUND
+| 404
+| 4000
+| 用户不存在
+|-
+| USER_WRONG_PASSWORD
+| 406
+| 4001
+| 密码错误
+|-
+| USER_ILLEGAL_AUTHCODE
+| 406 
+| 4002
+| 非法验证码
+|-
+| USER_EXPIRE_AUTHCODE
+| 406
+| 4003
+| 验证码过期
+|-
+| SPECIALIST_NOT_AUTH
+| 404
+| 4004
+| 未通过从医认证
+|-
+| USER_ILLEGAL_FAMILY_DOCTOR    
+| 406   
+| 4005  
+| 家医资格非法
+|-
+| USER_NOT_FOUND_FD             
+| 406   
+| 4006  
+| 家医不存在
+|-
+| USER_NOT_FOUND_SP             
+| 406   
+| 4007  
+| 专医不存在
+|-
+| USER_NOT_FOUND_CS             
+| 406   
+| 4008  
+| 客户不存在
+|-
+| TODO_EXPIRED                  
+| 403        
+| 5000  
+| 待办事项已过
+|-期
+| TODO_ILLEGAL_TYPE             
+| 403        
+| 5001  
+| 非法待办事项
+|-类型
+| TODO_ILLEGAL_STAGE            
+| 403        
+| 5002  
+| 非法的待办事
+|-项状态
+| RELATION_CHANNEL_EXISTS       
+| 403        
+| 6000  
+| 转诊通道关系
+|-已存在
+| RELATION_EXISTS               
+| 403        
+| 6001  
+| 已存在的关系
+|-
+| COMMON_MISSING_FIELDS         
+| 406   
+| 8000  
+| 字段缺失
+|-
+| COMMON_WRONG_FIELDS           
+| 406   
+| 8001  
+| 字段错误
+|-
+| COMMON_NOT_FOUND              
+| 404        
+| 8002  
+| 资源不存在
+|-
+| COMMON_FORBIDDEN              
+| 403        
+| 8003  
+| 非法操作
+|-
+| COMMON_ERROR                  
+| 400      
+| 8004  
+| 请求参数有
+|}
+
+== Quick References ==
+All API access is over HTTP (HTTPS TODO), and accesssed via http://api.zlycare.com domain. 
+The relative path prefix /3/ indicates that we are currently using version 3 of the API.
+
+''' 请求格式 '''
+
+对于 POST 和 PUT 请求, 请求的主体必须是 JSON 格式, 而且 HTTP header 的 Content-Type 需要设置为 application/json
+
+''' 响应格式 '''
+
+对于所有的请求的响应格式都是一个 JSON 对象.
+一个请求是否成功是由 HTTP 状态码标明的. 一个 2XX 的状态码表示成功, 而一个 4XX 表示请求失败. 当一个请求失败时响应的主体仍然是一个 JSON 对象, 但是总是会包含 code 和 error 这两个字段, 您可以用它们来进行 debug. 举个例子, 如果尝试用不允许的 key 来保存一个对象会得到如下信息:
+<code>
+{
+  "code" : xxx,
+  "error" : "xxxx"
+}
+</code>
+
+'''Cares (1xx)'''
+
+{|
+|'''Resource'''
+|'''Number'''
+|'''Method'''
+|'''URL'''
+|'''Functionality'''
+|-
+|rowspan='4'| 资源
+| 100
+| POST
+| /3/resources
+| 发布资源
+|-
+| 101
+| GET
+| /3/resources
+| 查找发布的资源列表
+|-
+| 102
+| GET
+| /3/resources/:uuid
+| 查找发布的资源
+|-
+| 103
+| POST
+| /3/resources/:uuid/billInfo
+| 资源新增订单信息
+|-
+|rowspan='4'| 付款
+| 110
+| POST
+| /3/cheques
+| 发起付款请求
+|-
+| 111
+| GET
+| /3/cheques
+| 查找付款请求列表 (?s=me: 待我收款 ?c=me: 我发出的付款)
+|-
+| 112
+| GET
+| /3/cheques/:uuid
+| 查找单笔付款请求
+|-
+| 113
+| PUT
+| /3/cheques/:uuid/completes
+| 确认某笔付款请求
+|-
+|rowspan='4'| 收款
+| 120
+| POST
+| /3/bills
+| 发起收款请求
+|-
+| 121
+| GET
+| /3/bills
+| 查找收款请求列表 (?s=me: 我发出的收款 ?c=me: 待我付款)
+|-
+| 122
+| GET
+| /3/bills/:uuid
+| 查找某笔收款请求
+|-
+| 123
+| PUT
+| /3/bills/:uuid/completes
+| 确认某笔收款请求
+|-
+|rowspan='5'| 通用
+| 130
+| POST
+| /3/cares
+| 新增care记录
+|-
+| 131
+| GET
+| /3/cares
+| 查找care记录列表
+|-
+| 132
+| GET
+| /3/cares/:uuid
+| 查找care记录
+|-
+| 133
+| PUT
+| /3/cares/:uuid
+| 修改care记录
+|-
+| 134
+| GET
+| /3/cares/:uuid/ehr
+| 查看某次care的所有EHR列表
+|-
+| 135
+| POST
+| /3/cares/:uuid/ehr
+| 增加care记录的ehr评论流水
+|}
+
+'''Users (2xx)'''
+基本接口
+{|
+|'''Number'''
+|'''Method'''
+|'''URL'''
+|'''Functionality'''
+|-
+| 200
+| POST
+| /3/users
+| 注册一个用户
+|-
+| 201
+| GET
+| /3/users
+| 查询用户列表
+|-
+| 202
+| GET
+| /3/users/:uuid
+| 查询一个用户
+|-
+| 203
+| PUT
+| /3/users/:uuid/specialistVerify
+| 用户从医资格提交认证
+|-
+| 204
+| PUT
+| /3/users/:uuid/medicalAuth
+| 用户从医资格审核
+|-
+| 205
+| GET
+| /3/users/:uuid/specialistInfo
+| 更新已认证用户的专家信息
+|-
+| 206
+| GET
+| /3/users/:uuid/accounting
+| 查询用户的财务状况,收入、支出、冻结
+|-
+| 207
+| PUT
+| /3/users/:uuid/profile
+| 更改用户的基本信息
+|-
+| 208
+| PUT
+| /3/users/:uuid/familyDoctorInfo
+| 更新用户的家医信息
+|-
+| 210
+| GET
+| /3/login
+| 登陆
+|-
+| 211
+| POST
+| /3/authCode
+| 请求验证码
+|-
+| 212
+| PUT
+| /3/actions/verifyAuthCode
+| 验证用户手机验证码
+|}
+
+'''Transactions (3xx)'''
+{|
+|'''Number'''
+|'''Method'''
+|'''URL'''
+|'''Functionality'''
+|-
+| 300
+| POST
+| /3/transactions
+| 新建交易记录
+|-
+| 301
+| GET
+| /3/transactions
+| 查询交易列表
+|-
+| 302
+| GET
+| /3/transactions/:uuid
+| 查询单笔交易
+|-
+| 310
+| POST
+| /3/transactions/manual
+| 新建人工充值、付款记录(根据cash数值判断)
+|-
+| 311
+| POST
+| /3/transactions/alipayDeposit
+| 新建阿里充值记录
+|-
+| 312
+| POST
+| /3/transactions/alipayWithdraw
+| 新建阿里提款记录
+|-
+| 313
+| POST
+| /3/transactions/weixinDeposit
+| 新建微信充值记录
+|-
+| 314
+| POST
+| /3/transactions/alipayWithdraw
+| 新建微信提款记录
+|-
+| 315
+| GET
+| /3/actions/autoUnlocked
+| 获取自动解锁的交易信息,并新建代办事项
+|}
+
+'''Tags (4xx)'''
+{|
+|'''Number'''
+|'''Method'''
+|'''URL'''
+|'''Functionality'''
+|-
+| 400
+| GET
+| /3/tags
+| 查询tags列表
+|}
+
+'''Search (5xx)'''
+{|
+|'''Number'''
+|'''Method'''
+|'''URL'''
+|'''Functionality'''
+|-
+| 500
+| GET
+| /search
+| 统一搜索接口
+|}
+
+'''Server Common(6xx)'''
+{|
+|'''Number'''
+|'''Method'''
+|'''URL'''
+|'''Functionality'''
+|-
+| 600
+| GET
+| /cdn
+| cdn服务器信息
+|-
+| 601
+| GET
+| /versions
+| 安装软件版本信息
+|}
+
+'''Todos (7xx)'''
+{|
+|'''Number'''
+|'''Method'''
+|'''URL'''
+|'''Functionality'''
+|-
+| 700
+| POST
+| /todos
+| 新建待办事项
+|-
+| 701
+| GET
+| /todos
+| 获取待办事项列表
+|-
+| 702
+| PUT
+| /todos/:uuid
+| 修改待办事项(状态改变、确认、取消、EHR)
+|-
+| 703
+| PUT
+| /todos/:uuid
+| 修改待办事项
+|-
+| 704
+| PUT
+| /actions/readNotification
+| 阅读待办事项
+|-
+| 705
+| PUT
+| /actions/acceptFirstVisit
+| 接受首诊预约
+|-
+| 706
+| PUT
+| /actions/createEhr
+| 为首诊Care添加EHR
+|-
+| 707
+| PUT
+| /actions/addCustomerFollow
+| 客户添加家医关注
+|}
+
+== Detailed Design ==
+
+=== 1XX Cares ===
+
+'''Care types'''
+A care could be blessed with different types in the whole workflow from born until completely closed.
+The payload JSON could be of one of the following data structures.
+
+'''A resource'''
+待订购的时间资源
+<code>
+{
+  "type" : 'r'                       //必需,care当前类型:'r'-resource 资源
+  "price" : 100,                     //必需,资源定价
+  "timeBegin" : Number,              //必需,资源开放的开始时间
+  "timeEnd" : Number,                //必需,资源开放的结束时间
+  "memo" : String,                   //非必需,资源的备注
+  "specialistId" : String,           //必需,专家医生的UUID
+  "specialistName" : String,         //必需,专家医生的名字
+  "specialistPhoneNum" : String,     //必需,专家医生的电话
+  "specialistAgentId" : String,      //必需,经纪人UUID
+  "specialistAgentName" : String,    //必需,经纪人姓名
+  "specialistAgentPhoneNum" : String //必需,经纪人手机号
+}
+</code>
+
+'''A cheque'''
+待收款的支票
+<code>
+{
+  "type" : 'c'                       //必需,care当前类型:c - cheque待收款项目;
+  "price" : 100,                     //必需,资源定价
+  "customerId" : String,             //必需,顾客UUID
+  "customerName" : String,           //必需,顾客姓名
+  "customerPhoneNum" : String,       //必需,顾客手机号
+  "specialistId" : String,           //必需,专家医生的UUID
+  "specialistName" : String,         //必需,专家医生的名字
+  "specialistPhoneNum" : String,     //必需,专家医生的电话
+  "specialistAgentId" : String,      //必需,经纪人UUID
+  "specialistAgentName" : String,    //必需,经纪人姓名
+  "specialistAgentPhoneNum" : String //必需,经纪人手机号
+}
+</code>
+
+'''A bill'''
+待付款的账单
+{
+  "type" : 'c'                      //必需,care当前类型:b - bill待付款项目;
+  "price" : 100,                    //必需,资源定价
+  "customerId" : String,            //必需,顾客UUID
+  "customerName" : String,          //必需,顾客姓名
+  "customerPhoneNum" : String,      //必需,顾客手机号
+  "specialistId" : String,          //必需,专家医生的UUID
+  "specialistName" : String,        //必需,专家医生的名字
+  "specialistPhoneNum" : String,    //必需,专家医生的电话
+  "familyDoctorId" : String,        //必需,家庭医生UUID
+  "familyDoctorName" : String,      //必需,家庭医生姓名
+  "familyDoctorPhoneNum" : String,  //必需,家庭医生手机号
+  "customerAgentId" : String,       //必需,主任UUID
+  "customerAgentName" : String,     //必需,主任姓名
+  "customerAgentPhoneNum" : String  //必需,主任手机号
+}
+
+'''A completed care'''
+完成的care
+{
+  "type" : 'cc'                     //必需,care当前类型:b - bill待付款项目;
+  "price" : 100,                    //必需,资源定价
+  "timeBegin" : Number,             //非必需,资源开放的开始时间
+  "timeEnd" : Number,               //非必需,资源开放的结束时间
+  "memo" : String,                  //非必需,资源的备注
+  "customerId" : String,            //必需,顾客UUID
+  "customerName" : String,          //必需,顾客姓名
+  "customerPhoneNum" : String,      //必需,顾客手机号
+  "specialistId" : String,          //必需,专家医生的UUID
+  "specialistName" : String,        //必需,专家医生的名字
+  "specialistPhoneNum" : String,    //必需,专家医生的电话
+  "familyDoctorId" : String,        //必需,家庭医生UUID
+  "familyDoctorName" : String,      //必需,家庭医生姓名
+  "familyDoctorPhoneNum" : String,  //必需,家庭医生手机号
+  "customerAgentId" : String,       //必需,主任UUID
+  "customerAgentName" : String,     //必需,主任姓名
+  "customerAgentPhoneNum" : String, //必需,主任手机号
+  "specialistAgentId" : String,      //必需,经纪人UUID
+  "specialistAgentName" : String,    //必需,经纪人姓名
+  "specialistAgentPhoneNum" : String //必需,经纪人手机号
+}
+
+'''Create a care'''
+When you're about to create a new care, you may end up with creating:
+** a resource: 发布时间资源
+** a cheque: 发起付款
+** a bill: 发起收款
+
+'''Update a care'''
+When you're about to update a care, you may end up with the following possible actions:
+** resource->bill: 订购一个资源
+** cheque->transaction: 确认收款，完成交易
+** bill->transaction: 确认付款，完成交易
+
+==== 100.发布资源 ====
+* URI: /3/resources
+* Method: POST
+* Params:
+* Request payload: A resource
+<code>
+{
+   "price": 222,                                    //资源定价
+   "timeBegin": 1408098600000,                      //资源开放的开始时间(UNIX时间戳)
+   "timeEnd": 1408101300000,                        //资源开放的结束时间(UNIX时间戳)
+   "memo": "坐诊",                                   //资源的备注
+   "referralAddress": "北医三院",                    //转诊地址
+   "specialistId": "53d066a1f11ffd3d2901f3da",      //专家医生的UUID
+   "specialistAgentId": "53df24da619b8703432d20a6", //经纪人UUID
+}
+</code>
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+==== 101.查看资源列表 ====
+* URI: /3/resources
+* Method: GET
+* Params:
+* Request payload: {}
+* Payload validation:
+* Response payload:
+<code>
+[//资源列表
+    {
+       "price": 222,                                    //资源定价
+       "timeBegin": 1408098600000,                      //资源开放的开始时间(UNIX时间戳)
+       "timeEnd": 1408101300000,                        //资源开放的结束时间(UNIX时间戳)
+       "memo": "坐诊",                                   //资源的备注
+       "referralAddress": "北医三院",                    //转诊地址
+       "specialistId": "53d066a1f11ffd3d2901f3da",      //专家医生的UUID
+       "specialistName": "刘鑫",                        //专家医生的名字
+       "specialistPhoneNum": "18310108769",             //专家医生的电话
+       "specialistAgentId": "53df24da619b8703432d20a6", //经纪人UUID
+       "specialistAgentName": "朱李叶",                  //经纪人姓名
+       "specialistAgentPhoneNum": "961"                 //经纪人手机号
+       "type": 'r'                                      //care当前类型:'r'-resource 资源
+    },{},...
+]
+</code>
+
+==== 102.查看用户发布资源列表 ====
+* URI: /3/users/:uuid/resources
+* Method: GET
+* Params:
+** type=a/r/o  :  a-available-有效资源;r-resource-未预约和过期资源；o-order-已预约和已完成资源
+** sort=a/d    :  a-asc-按开始时间升序;d-desc-按开始时间降序
+* Response payload:
+<code>
+[
+//资源列表
+    {
+       "price": 222,                                    //资源定价
+       "timeBegin": 1408098600000,                      //资源开放的开始时间(UNIX时间戳)
+       "timeEnd": 1408101300000,                        //资源开放的结束时间(UNIX时间戳)
+       "memo": "坐诊",                                   //资源的备注
+       "referralAddress": "北医三院",                    //转诊地址
+       "specialistId": "53d066a1f11ffd3d2901f3da",      //专家医生的UUID
+       "specialistName": "刘鑫",                        //专家医生的名字
+       "specialistPhoneNum": "18310108769",             //专家医生的电话
+       "specialistAgentId": "53df24da619b8703432d20a6", //经纪人UUID
+       "specialistAgentName": "朱李叶",                  //经纪人姓名
+       "specialistAgentPhoneNum": "961"                 //经纪人手机号
+       "type": 'r'                                      //care当前类型:'r'-resource 资源
+    },{},...
+]
+</code>
+
+==== 103.家医申请转诊 ====
+* URI: /3/actions/applyReferral
+* Method: PUT
+* Params:
+* Request payload:
+<code>
+{
+    "careId": String,
+    "familyDoctorId": String,
+    "customerId": String,
+    "tags": [String]          //搜索匹配专医资源的字段
+}
+</code>
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+==== 104.会员确认转诊 ====
+* URI: /3/actions/cConfirmReferral
+* Method: PUT
+* Params:
+* Request payload:
+<code>
+{
+    "todoId": String,
+    "tags": [String]  //患者修改确认后的转诊病情信息
+}
+</code>
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+==== 105.会员拒绝转诊 ====
+* URI: /3/actions/cRejectReferral
+* Method: PUT
+* Params:
+* Request payload:
+<code>
+{
+    "todoId": String
+}
+</code>
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+==== 106.删除某个资源 ====
+
+* URI: /3/resources/:uuid
+* Method: DELETE
+* Params:
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+==== 110.发起付款请求 ====
+* URI: /3/checks
+* Method: POST
+* Params:
+* Request payload:
+* Request payload:
+<code>
+//成功 200
+{
+   "price": 100,                //资源定价
+   "customerId": String,        //顾客UUID
+   "specialistId": String,      //专家医生的UUID
+   "familyDoctorId": String,    //家庭医生UUID
+   "customerAgentId": String,     //主任UUID
+}
+</code>
+* Response:
+<code>
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+==== 111.查找用户付款请求列表 ====
+* URI: /3/users/:uuid/checks
+* Method: GET
+* Params:
+** type=b/c/cc  :  b-待我付款(对方发起的收款);c-我发起的付款(待对方确认);cc-我完成的付款
+<code>
+{
+   "price": 100,                //资源定价
+   "customerId": String,        //顾客UUID
+   "customerName": String,      //顾客姓名
+   "customerPhoneNum": String,  //顾客手机号
+   "specialistId": String,      //专家医生的UUID
+   "specialistName": String,    //专家医生的名字
+   "specialistPhoneNum": String,//专家医生的电话
+   "familyDoctorId": String,    //家庭医生UUID
+   "familyDoctorName": String,  //家庭医生姓名
+   "familyDoctorPhoneNum": String,//家庭医生手机号
+   "customerAgentId": String,     //主任UUID
+   "customerAgentName": String,     //主任姓名
+   "customerAgentPhoneNum": String, //主任手机号
+   "type": 'c'                  //care当前类型
+}
+</code>
+* Response payload:
+
+==== 112.查找某笔付款请求 ====
+* URI: /3/checks/:uuid
+* Method: GET
+* Params:
+* Response payload:
+<code>
+{
+   "price": 100,                //资源定价
+   "customerId": String,        //顾客UUID
+   "customerName": String,      //顾客姓名
+   "customerPhoneNum": String,  //顾客手机号
+   "specialistId": String,      //专家医生的UUID
+   "specialistName": String,    //专家医生的名字
+   "specialistPhoneNum": String,//专家医生的电话
+   "familyDoctorId": String,    //家庭医生UUID
+   "familyDoctorName": String,  //家庭医生姓名
+   "familyDoctorPhoneNum": String,//家庭医生手机号
+   "customerAgentId": String,     //主任UUID
+   "customerAgentName": String,     //主任姓名
+   "customerAgentPhoneNum": String, //主任手机号
+   "type": 'c'                  //care当前类型
+   "initialType": 'cc'          //care的初始化类型
+}
+</code>
+==== 113.确认某笔付款请求 ====
+* URI: /3/actions/collectCheck
+* Method: PUT
+* Params:
+* Request payload:
+<code>
+{
+    "careId": String,
+    "specialistAgentId": String,      //专家医生的UUID
+}
+</code>
+* Payload validation:
+* Response payload:
+<code>
+//成功 200
+{}
+//失败
+{
+    "code" :Number,  //Error Code
+    "msg" :String    //Error Message
+}
+</code>
+
+==== 120.发起收款请求 ====
+* URI: /3/bills
+* Method: POST
+* Params:
+* Request payload:
+<code>
+{
+   "price": 100,                //资源定价
+   "customerId": String,        //顾客UUID
+   "specialistId": String,      //专家医生的UUID
+   "specialistAgentId": String, //经纪人UUID
+}
+</code>
+* Payload validation:
+* Response payload:
+<code>
+//成功 200
+{}
+//失败
+{
+    "code" :Number,  //Error Code
+    "msg" :String    //Error Message
+}
+</code>
+
+==== 121.查找用户收款请求列表 ====
+* URI: /3/users/:uuid/bills
+* Method: GET
+* Params:
+** type=c/b/cc  :  c-待我收款(对方发起的付款);b-我发起的收款(待对方确认);cc-我完成的收款
+* Request payload:
+* Payload validation:
+* Response payload:
+<code>
+{
+   "price": 100,                //资源定价
+   "customerId": String,        //顾客UUID
+   "customerName": String,      //顾客姓名
+   "customerPhoneNum": String,  //顾客手机号
+   "specialistId": String,      //专家医生的UUID
+   "specialistName": String,    //专家医生的名字
+   "specialistPhoneNum": String,//专家医生的电话
+   "familyDoctorId": String,    //家庭医生UUID
+   "familyDoctorName": String,  //家庭医生姓名
+   "familyDoctorPhoneNum": String,//家庭医生手机号
+   "customerAgentId": String,     //主任UUID
+   "customerAgentName": String,     //主任姓名
+   "customerAgentPhoneNum": String, //主任手机号
+   "type": 'c'                  //care当前类型
+   "initialType": 'cc'          //care的初始化类型
+}
+</code>
+
+==== 122.查找某笔收款请求 ====
+* URI: /3/bills/:uuid/
+* Method: GET
+* Params:
+* Request payload:
+* Payload validation:
+* Response payload:
+
+==== 123.确认某笔收款请求 ====
+* URI: /3/actions/payBill
+* Method: PUT
+* Params:
+* Request payload:
+<code>
+{
+   "careId": String
+   "familyDoctorId": String,        //家医UUID
+   "customerAgentId": String,      //主任UUID
+}
+</code>
+* Payload validation:
+* Response payload:
+<code>
+//成功 200
+{}
+//失败
+{
+    "code" :Number,  //Error Code
+    "msg" :String    //Error Message
+}
+</code>
+
+==== 130.新增care首诊记录 ====
+* URI: /3/firstVisit
+* Method: POST
+* Params:
+* Request payload:
+<code>
+//A resource
+{...}
+//A cheque
+{...}
+//A bill
+...
+//A First visit
+{
+   "type" : "fv",             //必需, 申请首诊
+   "userId" : String,         //必需, 订购用户的UUID
+   "doctorId" : String,       //必需, 被订购家医的UUID
+   "ctags" : String[]         //可选, 备注、说明;需求标签
+}
+
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 131.查看care记录列表 ====
+* URI: /3/cares
+* Method: GET
+* Params:
+* Request payload: {}
+* Payload validation:
+* Response:
+
+==== 132.查看care记录 ====
+* URI: /3/cares/:uuid
+* Method: GET
+* Params:
+* Request payload: {}
+* Payload validation: 必需字段的存在性检查，以及当前type的正确性
+* Response:
+<code>
+ {
+   "createdAt":number
+   "_id": string,
+   "customerId": string,
+   "customerName": string,
+   "familyDoctorId": string,
+   "familyDoctorName": string,
+   "specialistId": string,
+   "specialistName": string,
+   "timeBegin": number,
+   "timeEnd": number,
+   "type": "cc",
+   "ehr": [{
+           "taggerId": "53ce35a5e5e9c3e1173a3625",  //打标签的用户UUID
+           "userId": "53ce35a5e5e9c3e1173a3625",    //被打标签的用户UUID
+           "createdAt": 1409097090039,              //生成时间(UNIX timestamp)
+           "tags": [                                //标签
+               "hello",
+               "给力"
+               ]
+           }]
+ }
+</code>
+
+==== 133.修改care记录 ====
+* URI: /3/cares/:uuid
+* Method: PUT
+* Params:
+* Request payload: A bill, or a transaction.
+* Payload validation: 必需字段的存在性检查，以及当前type的正确性
+* Response:
+
+==== 134.查看care记录的ehr列表 ====
+* URI: /3/cares/:uuid/ehr
+* Method: GET
+* Params:
+* Request payload: 
+* Response:
+<code>
+//成功 200
+  [{
+   "taggerId":string,	//打标签的用户UUID
+   "tags":string[],	   //类型
+   "createdAt":number	//生成时间(UNIX timestamp)
+  },...
+  ]
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 135.首诊家医评价用户,为care添加EHR标签 ====
+* URI: /3/cares/:uuid/bcehrs
+* Method: POST
+* Params:
+* Request payload:
+<code>
+ {
+   "taggerId":string,	//打标签的用户UUID
+   "userId":String,     //被打标签的用户UUID
+   "tags":string[] 	   //类型
+ }
+</code>
+* Payload validation: 必需字段的存在性检查，以及当前type的正确性
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 136.查看用户的care记录及EHR子文档 ====
+* URI: /3/users/:uuid/ehrs
+* Method: POST
+* Params:
+* Request payload:
+<code>
+ {
+   "createdAt":number
+   "_id": string,
+   "customerId": string,
+   "customerName": string,
+   "familyDoctorId": string,
+   "familyDoctorName": string,
+   "specialistId": string,
+   "specialistName": string,
+   "type": "cc",
+   "ehr": [{
+           "taggerId": "53ce35a5e5e9c3e1173a3625",  //打标签的用户UUID
+           "userId": "53ce35a5e5e9c3e1173a3625",    //被打标签的用户UUID
+           "createdAt": 1409097090039,              //生成时间(UNIX timestamp)
+           "tags": [                                //标签
+               "hello",
+               "给力"
+               ]
+           }]
+ }
+</code>
+* Payload validation: 必需字段的存在性检查，以及当前type的正确性
+* Response:
+
+==== 137.转诊家医评价专医,为care添加EHR标签 ====
+* URI: /3/cares/:uuid/bsehrs
+* Method: POST
+* Params:
+* Request payload:
+<code>
+ {
+   "taggerId":string,	//打标签的用户UUID
+   "userId":String,     //被打标签的用户UUID
+   "tags":string[] 	   //类型
+ }
+</code>
+* Payload validation: 必需字段的存在性检查，以及当前type的正确性
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 138.转诊专医评价用户,为care添加EHR标签 ====
+* URI: /3/cares/:uuid/scehrs
+* Method: POST
+* Params:
+* Request payload:
+<code>
+ {
+   "taggerId":string,	//打标签的用户UUID
+   "userId":String,     //被打标签的用户UUID
+   "tags":string[] 	   //类型
+ }
+</code>
+* Payload validation: 必需字段的存在性检查，以及当前type的正确性
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 139.客户为自己添加主诉,为care添加EHR标签 ====
+* URI: /3/cares/:uuid/ccehrs
+* Method: POST
+* Params:
+* Request payload:
+<code>
+ {
+   "taggerId":string,	//打标签的用户UUID
+   "userId":String,     //被打标签的用户UUID
+   "tags":string[] 	   //类型
+ }
+</code>
+* Payload validation: 必需字段的存在性检查，以及当前type的正确性
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+=== 2XX Users ===
+
+==== 200.注册一个用户 ====
+* URI: /3/users
+* Method: POST
+* Request payload:
+<code>
+{
+  "name" : String,                  //必需,姓名
+  "sex" : String,                   //必需,性别
+  "avatar" : String,                //非必需,头像
+  "phoneNum" : String,              //必需,手机号,TODO:需保证是已验证后的手机号??
+  "alipayAccount" : String,         //必需,支付宝账户
+  "password" : String,              //必需,加密后的密码
+  "uuid" : String                   //必需,验证码UUID,需要确保验证码没有过期
+  "customerAgentId" : String,       //非必需,主任UUID
+  "customerAgentName" : String,     //非必需,主任姓名
+  "customerAgentPhoneNum" : String, //非必需,主任手机号
+}
+</code>
+* Response:
+<code>
+//成功 201
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 201.查看用户列表 ====
+* URI: /3/users
+* Method: GET
+* URI params:
+** tel={phoneNum} : 根据手机号查询，以列表形式返回唯一用户
+** alipay={alipayAccount}: 根据支付宝账号查询，可能返回多个用户
+** authState: c - 正在审核
+** isFd: t/f - 查询是否为家医
+** isAvailable: t/f - 当前是否在线
+* Response:
+<code>
+//成功 200
+  [//用户列表
+    {
+      //用户信息
+    },{},...
+  ]
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 202.查询一个用户 ====
+* URI: /3/users/:uuid
+* Method: GET
+* URI params:
+* Response:
+<code>
+//成功 200
+  {//用户信息
+   "_id" :String,                     //用户编号UUID
+   "name" :String,                    //用户姓名
+   "pinyin" :String[],                //姓名拼音
+   "phoneNum" :String,                //手机号
+   "isPhoneAuth" :Boolean,            //是否被认证
+   "avatar" :String,                  //头像
+   "alipayAccount" :String,           //阿里支付宝账户
+   "department" :String,              //所属部门
+   "lockedCash" :Number,              //锁定金额
+   "hospital" :String,                //医院
+   "position" :String,                //职位
+   "sex" :String,                     //性别
+   "uTags" :String[],                 //用户tag列表
+   "createdAt" :Number,               //创建时间
+   "updatedAt" :Number,               //更新时间
+   "isDeleted" :String,               //是否被删除
+   "firstVisitPrice" :Number,         //首诊价格
+   "visitAddress" :String,            //首诊地址
+   "isAvailable" :Boolean,            //是否在线
+   "qualificationImages" :String[ ],  //认证图片
+   "familyDoctorAuthState" :String,   //家医认证状态
+   "specialistAuthState" :String,     //专医认证状态
+   "isSpecialist" :Boolean,           //是否专医
+   "isFamilyDoctor" :Boolean,         //是否家医
+   "sTags" :String[]                  //专医tag列表
+  },...//
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 203.用户从医资格提交认证 ====
+* URI: /3/users/:uuid/specialistVerify
+* Method: PUT
+* Request payload:
+<code>
+{
+  "visitAddress" : String,             //可选,首诊地址
+  "visitAddressGPS" : [Number, Number],//可选,首诊地址的经纬度
+  "firstVisitPrice" : Number,          //可选,首诊价格,根据此字段来判断是否申请做家医
+  "qualificationImages" :String[],     //必需,资格证书图片,length >= 1
+  "hospital" : String,                 //可选,坐诊医院
+  "department" : String,               //可选,医院科室
+  "position" : String,                 //可选,医生职称
+  "sTags" : String[],                  //可选,医生标签
+  "specialistAgentId" : String,        //经纪人UUID
+  "specialistAgentName" : String,      //经纪人姓名
+  "specialistAgentPhoneNum" : String   //经纪人手机号
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 204.用户从医资格审核 ====
+* URI: /3/users/:uuid/medicalAuth
+* Method: PUT
+* Request payload:
+<code>
+{
+  "authMessage" : String, //可选,认证反馈信息
+  "authState" : Boolean   //必填,认证状态, 成功/失败
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 205. 更新用户的专家信息====
+* URI: /3/users/:uuid/specialistInfo
+* Method: PUT
+* Request payload:
+<code>
+{
+  "isFamilyDoctor" : Boolean,          //可选,家医开关
+  "visitAddress" : String,             //可选,首诊地址
+  "visitAddressGPS" : [Number, Number],//可选,首诊地址的经纬度
+  "firstVisitPrice" : Number,          //可选,首诊价格,根据此字段来判断是否申请做家医
+  "qualificationImages" :String[],     //可选,资格证书图片,length >= 1
+  "hospital" : String,                 //可选,坐诊医院
+  "department" : String,               //可选,医院科室
+  "position" : String,                 //可选,医生职称
+  "sTags" : String[],                  //可选,医生标签
+  "specialistAgentId" : String,        //经纪人UUID
+  "specialistAgentName" : String,      //经纪人姓名
+  "specialistAgentPhoneNum" : String   //经纪人手机号
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 207.更改用户的基本信息 ====
+* URI: /3/users/:uuid/profile
+* Method: PUT
+* Params:
+* Request payload:
+<code>
+{
+  "customerAgentId" : String          //介绍人ID
+  "cTags" : [String]                  //用户标签
+}
+</code>
+* Payload validation:
+* Response payload:
+<code>
+//成功 200
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 208.更新用户的家医信息 ====
+* URI: /3/users/:uuid/familyDoctorInfo
+* Method: PUT
+* Params:
+* Request payload:
+<code>
+{
+  "visitAddress" : String,             //可选,首诊地址
+  "visitAddressGPS" : [Number, Number],//可选,首诊地址的经纬度
+  "firstVisitPrice" : Number,          //可选,首诊价格
+  "isAvailable" : Boolean              //可选,在线开关
+  "isFamilyDoctor" : Boolean           //可选,家医开关
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 209.更改用户密码 ====
+* URI: /3/users/:uuid/password
+* Method: PUT
+* Params:
+* Request payload:
+<code>
+{
+  "pwd" : String               //原密码
+  "oldpwd" : [String]          //旧密码
+}
+</code>
+* Payload validation:
+* Response payload:
+<code>
+//成功 200
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+
+==== 210.登陆 ====
+* URI: /3/login
+* Method: GET
+* URI params:
+** username=:phoneNum //手机号
+** password=MD5(:password) //MD5后的密码
+* Response:
+<code>
+//成功 200
+  {
+   "_id" : String,            //用户UUID
+   "avatar" : String,         //头像
+   "name" : String,           //姓名
+   "updateAt" : Number        //最近更新时间
+   "department" : String      //科室
+   "cdnInfo" :                //CDN服务器信息
+      {
+       "uri" : String,        //CDN Server的地址
+       "token" : String,      //CDN Server上传的token
+       "smallView" : String,  //CDN图片处理: 小图配置
+       "middleView" : String  //CDN图片处理: 中图配置
+      }
+  }
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 211.获取验证码 ====
+* URI: /authCode
+* Method: POST
+* Request payload:
+<code>
+{
+  "phoneNum" :String   //必需,申请验证码的手机号
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {
+   "uuid" : "String"  //验证码的唯一编号,验证时需要
+  }
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 212.核对验证码 ====
+* URI: /3/actions/verifyAuthCode
+* Method: PUT
+* Request payload:
+<code>
+{ 
+  "uuid" : String,     //必需,申请验证码的UUID
+  "authCode" : String  //必需,申请验证码的UUID
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 213.退出 ====
+* URI: /3/logout
+* Method: GET
+* URI params:
+** uuid=:uuid //用户
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+    "code" :Number,  //Error Code
+    "msg" :String    //Error Message
+}
+</code>
+
+==== 214.绑定pushId ====
+* URI: /3/actions/bindPushId
+* Method: PUT
+* Request payload:
+<code>
+{
+  "userId" : String,      //必需,用户的UUID
+  "baiduPushId" : String  //必需，baiduPush的UUID
+}
+</code>
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+=== 3XX Transactions ===
+==== 301.查询用户的财务状况(收入、支出、冻结) ====
+* URI: /3/users/:uuid/accounting
+* Method: GET
+* Params:
+* Request payload:
+* Payload validation:
+* Response payload:
+<code>
+//成功 200
+{
+   "amount": Number,         //余额
+   "income": Number,         //收入
+   "payment": Number,        //支出
+   "lockedCash" :Number      //锁定金额
+}
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+==== 302.查询用户收支详情 ====
+* URI: /3/users/:uuid/balances
+* Method: GET
+* Params:
+* Request payload:
+* Payload validation:
+* Response payload:
+<code>
+//成功 200
+[
+   {
+        "userId": "53d066a1f11ffd3d2901f3da",
+        "careId": "53d08c9c96036b0a2d75ec4b",
+        "cash": 40,
+        "rolePlayed": "cc",
+        "_id": "53d097bf96036b0a2d75ec53",
+        "createDate": 1406179263158,
+        "__v": 0,
+        "isDeleted": false,
+        "createdAt": 1409231388993
+   },...
+]
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+==== 303.查询用户收入详情 ====
+* URI: /3/users/:uuid/earnings
+* Method: GET
+* Params:
+* Request payload:
+* Payload validation:
+* Response payload:
+<code>
+//成功 200
+[
+   {
+        "userId": "53d066a1f11ffd3d2901f3da",
+        "careId": "53d08c9c96036b0a2d75ec4b",
+        "cash": 40,
+        "rolePlayed": "cc",
+        "_id": "53d097bf96036b0a2d75ec53",
+        "createDate": 1406179263158,
+        "__v": 0,
+        "isDeleted": false,
+        "createdAt": 1409231388993
+   },...
+]
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+==== 304.查询用户支出详情 ====
+* URI: /3/users/:uuid/spendings
+* Method: GET
+* Params:
+* Request payload:
+* Payload validation:
+* Response payload:
+<code>
+//成功 200
+[
+   {
+        "userId": "53d066a1f11ffd3d2901f3da",
+        "careId": "53d08c9c96036b0a2d75ec4b",
+        "cash": 40,
+        "rolePlayed": "cc",
+        "_id": "53d097bf96036b0a2d75ec53",
+        "createDate": 1406179263158,
+        "__v": 0,
+        "isDeleted": false,
+        "createdAt": 1409231388993
+   },...
+]
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+==== 305.查询用户锁定交易列表 ====
+* URI: /3/users/:uuid/lockeds
+* Method: GET
+* Comment: 每笔锁定交易都会生成正负两笔对冲交易,future代表交易锁定释放生效时间（一年生效时间代表无限锁定）
+* Request payload:
+* Payload validation:
+* Response payload:
+<code>
+//成功 200
+[
+   {
+        "userId": "53d066a1f11ffd3d2901f3da",
+        "careId": "53d08c9c96036b0a2d75ec4b",
+        "cash": 50,
+        "rolePlayed": "l",
+        "_id": "53d097bf96036b0a2d75ec53",
+        "createDate": 1406179263158,
+        "future": 1406179263158,        //释放生效时间
+        "__v": 0,
+        "isDeleted": false,
+        "createdAt": 1409231388993
+   },...
+]
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+==== 306.查询用户锁定交易详情 ====
+* URI: /3/cares/:uuid/lockedDetail
+* Method: GET
+* Params:
+** userId=53d085ee96036b0a2d75ec49  //必须，用户UUID
+* Request payload:
+* Payload validation:
+* Response payload:
+<code>
+//成功 200
+{
+    "title": "看病冻结",
+    "memo": "通知说明"
+}
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+
+==== 315.获取自动解锁的交易信息,并新建代办事项 ====
+* URI: /3/actions/autoUnlocked
+* Method: GET
+* Params:
+** uid=String  //必须，用户UUID
+* Request payload:
+* Payload validation:
+* Response payload:
+<code>
+//成功 200
+[
+  {
+    tradeNo: String,      // 交易号,充值回调时淘宝返回
+    userId: String,       // 用户UUID
+    careId: String,       // careUUID
+    cash: Number,         // 分配现金
+    rolePlayed: String,   // 交易中扮演的角色,c-患者;b-家医;s-专医;cc-主任;ss-经纪人;recharge-充值;withdraw-提现,l - lock unlock
+    future: Number,       // 未来生效时间
+    createdAt: Number,    // 生成时间
+    },...
+]
+//失败
+{
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+}
+</code>
+
+
+=== 4XX Tags ===
+
+==== 400 查询所有tags ====
+* URI: /3/tags
+* Method: GET
+* Response:
+<code>
+{
+  "tag" : String,   //标签
+  "count" : Number  //频数
+}
+</code>
+
+==== 401 查询用户cTags ====
+* URI: /users/:uuid/cTags
+* Method: GET
+* Response:
+<code>
+{
+  "_id" : String,     //id
+  "cTags" : [String]  //用户标签
+}
+</code>
+
+==== 402 查询用户sTags ====
+* URI: /users/:uuid/sTags
+* Method: GET
+* Response:
+<code>
+{
+  "_id" : String,     //id
+  "cTags" : [String]  //专业标签
+}
+</code>
+
+
+=== 5XX Search ===
+
+==== 500 Search 统一搜索接口 ====
+* URI: /3/search
+* Method: GET
+** role={role} : s-搜索专医  f-搜索家医
+** uid: 当前查询用户的uuid
+** q={q} : 标签（搜索关键词），以空格为分隔符
+** sort: d-距离; fvi-首诊指数; ri-转诊指数; pa-首诊价格升序; pd-首诊价格降序 (当前仅支持家医)
+** lon: 经度，例如北京经度 116.3917
+** lat: 纬度，例如北京唯独 39.9139
+** type: ce-转诊通道已建立; cne-转诊通道未建立;
+* Response:
+<code>
+//成功 200
+  [
+    {
+     "name" : String,                 //姓名
+     "sex" : String,                  //性别
+     "isChannelExists": Boolean,      //转诊资源查询, 通道是否建立
+     "phoneNum" : String,             //电话号码, 如果没有建立关系则为空
+     "hospital" : String,             //坐诊医院
+     "department" : String,           //医院科室
+     "position" : String,             //医生职称
+     "sTags" : [String],              //医生标签
+     "isFamilyDoctor" : Boolean,      //是否认证为家医
+     "isSpecialist" : Boolean,        //是否认证为专医
+     "isAvailable" : Boolean,         //是否家医online
+     "visitAddress" : String,         //地址
+     "firstVisitPrice" : Number       //首诊价格
+    },//...
+  ]
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+=== 6XX Server Common ===
+
+==== 600 获取cdn服务器信息 ====
+* URI: /3/cdn
+* Method: GET
+* Response:
+<code>
+//成功 200
+  {
+   "uri" : String,        //CDN Server的地址
+   "token" : String,      //CDN Server上传的token
+   "smallView" : String,  //CDN图片处理: 小图配置
+   "middleView" : String  //CDN图片处理: 中图配置
+  }
+//失败
+  {
+   "code" :Number,  //Error Code
+   "msg" :String    //Error Message
+  }
+</code>
+
+==== 601 获取安装软件版本信息 ====
+* URI: /3/versions
+* Method: GET
+* URI params:
+** app : app name       指定app
+** pf : platform   指定平台
+* Response:
+<code>
+//成功 200
+  {
+  "v" :Number,   //当前版本号
+  "url" :String  //当前版本下载地址
+  }
+//失败
+  {
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+  }
+</code>
+
+=== 7XX Todos ===
+
+==== 700 新建待办事项 ====
+* URI: /3/todos
+* Method: POST
+* URI params:
+* Response:  
+
+==== 701 获取待办事项列表 ====
+* URI: /3/todos
+* Method: GET
+* URI params:
+** u=userId   用户的UUID
+** type=type  代办事项类型
+** role=c/b/s 用户类型, c - b - s
+* Response:
+<code>
+//成功 200
+[//待办事项列表
+  {
+  "_id" : ObjectId, 	      //待办事项UUID
+  "careId" :String,	        //关怀的UUID
+  "triggerId" :String,	    //触发todo生成的用户UUID
+  "userId" :String,         //用户的UUID
+  "type" :Number,           //待办事项类型:
+  // a - apply friend好友申请;
+  // p - payment付款;g - gathering收款;
+  // fcf - first visit customer follow 首诊B首次评价后,C可关注B;
+  // nro - notification read only只读通知;
+  // fcr - first visit customer read doctor info 首诊家医确认后,客户待阅读通知
+  // fbc - first visit family doctor confirm 首诊待家医确认(确认后显示EHR链接)
+  // rcc - Referral Customer Confirm 转诊用户确认
+  // rsc - Referral Specialist Confirm 转诊专家确认(建立channel-接受转诊-病历评论)
+  // rbc - Referral Family Doctor Comment 等待B评价S
+  "memo" :String,	          //说明、备注
+  "processStage" :String,	  //代办事项处理阶段:
+  // n - new新建初始状态; r - read已阅读;
+  // c - confirm已处理完成; d - deny已拒绝; e -EHR已完成首次评价
+  // cc - channel confirmed通道建立; cd - channel deny通道拒绝 ;
+  // ra - referral accept转诊接受; rd - referral deny转诊拒绝;
+  "isChannelExists": Boolean //新建待办时授权通道是否已存在, 只是在type为rsc的待办事项中存在!!
+  "future" :Number,	        //生效、限制时差.部分待办事项需要(createdAt + future)=validatedTime
+  "createdAt" :Number,	    //生成时间(UNIX timestamp)
+  "updatedAt" :Number,   	  //更新时间(UNIX timestamp)
+  },....
+]
+//失败
+  {
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+  }
+</code>
+
+==== 702 获取待办事项详细信息 ====
+* URI: /3/todos/:uuid
+* Method: GET
+* URI params:
+* Response:
+<code>
+//成功 200
+  {
+    "_id" : ObjectId, 	      //待办事项UUID
+    "careId" :String,	        //关怀的UUID
+    "triggerId" :String,	    //触发todo生成的用户UUID
+    "userId" :String,         //用户的UUID
+    "type" :Number,           //待办事项类型:
+    // a - apply friend好友申请;
+    // p - payment付款;g - gathering收款;
+    // fcf - first visit customer follow 首诊B首次评价后,C可关注B;
+    // nro - notification read only只读通知;
+    // fcr - first visit customer read doctor info 首诊家医确认后,客户待阅读通知
+    // fbc - first visit family doctor confirm 首诊待家医确认(确认后显示EHR链接)
+    // rcc - Referral Customer Confirm 转诊用户确认
+    // rsc - Referral Specialist Confirm 转诊专家确认(建立channel-接受转诊-病历评论)
+    // rbc - Referral Family Doctor Comment 等待B评价S
+    "memo" :String,	          //说明、备注
+    "processStage" :String,	  //代办事项处理阶段:
+    // n - new新建初始状态; r - read已阅读;
+    // c - confirm已处理完成; d - deny已拒绝; e -EHR已完成首次评价
+    // cc - channel confirmed通道建立; cd - channel deny通道拒绝 ;
+    // ra - referral accept转诊接受; rd - referral deny转诊拒绝;
+    "isChannelExists": Boolean //新建待办时授权通道是否已存在, 只是在type为rsc的待办事项中存在!!
+    "future" :Number,	        //生效、限制时差.部分待办事项需要(createdAt + future)=validatedTime
+    "createdAt" :Number,	    //生成时间(UNIX timestamp)
+    "updatedAt" :Number,   	  //更新时间(UNIX timestamp)
+  }
+//失败
+  {
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+  }
+</code>
+
+==== 703 修改待办事项 ====
+* URI: /3/todos/:uuid
+* Method: PUT
+* URI params:
+* Request payload:
+<code>
+//阅读代办事项
+{
+  "processStage" : "r", //必选,已阅读
+}
+//接受代办事项
+{
+  "processStage" : "c", //必选,已接受
+}
+//拒绝代办事项
+{
+  "processStage" : "d", //必选,拒绝
+}
+//为代办事项添加EHR
+{
+  "processStage" : "e",  //必选,EHR
+  "tags" :String[]       //必选,EHR
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+  }
+</code>
+
+==== 704 阅读待办事项 ====
+* URI: /3/actions/readNotification
+* Method: PUT
+* URI params:
+* Request payload:
+<code>
+//阅读代办事项
+{
+  "uuid" : String, //必选,待办事项的UUID
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+  }
+</code>
+
+==== 705 接受首诊预约 ====
+* URI: /3/actions/acceptFirstVisit
+* Method: PUT
+* URI params:
+* Request payload:
+<code>
+//接受首诊预约待办事项
+{
+  "uuid" : String, //必选,待办事项的UUID
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+//失败
+  {
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+  }
+</code>
+
+==== 706 为首诊Care添加EHR ====
+* URI: /3/actions/addEhr
+* Method: PUT
+* URI params:
+* Request payload:
+<code>
+//为代办事项添加EHR
+{
+  "uuid" : String,          //必选,待办事项的UUID
+  "tags" :String[]       //必选,EHR对应的tags
+}
+</code>
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+}
+</code>
+
+==== 707 客户添加家医关注 ====
+* URI: /3/actions/addCustomerFollow
+* Method: PUT
+* URI params:
+* Request payload:
+<code>
+{
+  "uuid" : String,          //必选,待办事项的UUID
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+</code>
+
+==== 708 转诊-专医接受通道申请 ====
+* URI: /3/actions/acceptRefChannel
+* Method: PUT
+* URI params:
+* Request payload:
+<code>
+{
+  "uuid" : String,          //必选,待办事项的UUID
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+</code>
+
+==== 709 转诊-专医拒绝通道申请 ====
+* URI: /3/actions/rejectRefChannel
+* Method: PUT
+* URI params:
+* Request payload:
+<code>
+{
+  "uuid" : String,          //必选,待办事项的UUID
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+</code>
+
+==== 710 转诊-专医接受转诊申请 ====
+* URI: /3/actions/acceptReferral
+* Method: PUT
+* URI params:
+* Request payload:
+<code>
+{
+  "uuid" : String,          //必选,待办事项的UUID
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+</code>
+
+==== 711 转诊-专医拒绝转诊申请 ====
+* URI: /3/actions/rejectReferral
+* Method: PUT
+* URI params:
+* Request payload:
+<code>
+{
+  "uuid" : String,          //必选,待办事项的UUID
+}
+</code>
+* Response:
+<code>
+//成功 200
+  {}
+{}
+//失败
+{
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+}
+</code>
+
+==== 712 根据care批量阅读待办事项 ====
+* URI: /3/actions/readNotificationByCare
+* Method: PUT
+* URI params:
+* Request payload:
+<code>
+//阅读代办事项
+{
+  "careId" : String, //必选,待办事项的careId
+}
+</code>
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+}
+</code>
+
+==== 713 获取用户待办care列表（根据care折叠） ====
+* URI: /3/uers/:uuid/cares
+* Method: GET
+* URI params:
+* Request payload:
+<code>
+[
+    {
+        "_id" : String,               // 待办事项的careId
+        "initialType": String,        // careTodo initialType
+        "step": int,                  // 位于当前care流程步骤   100-已完成
+        "isUnReaded": Boolean         // 未读通知,true有未读
+        "todoNum": int                // 未处理的待办数量
+        "customerId": String,         // 用户UUID
+        "familyDoctorId": String,     // 家医UUID
+        "specialistId": String,       // 专医UUID
+        "customerName": String,       // 用户姓名
+        "familyDoctorName": String,   // 家医姓名
+        "specialistName": String,     // 专医姓名
+        "createdAt": long,            // 创建时间
+        "updatedAt": long             // 最近更新时间
+        "todo":[
+                       {
+                             "_id" : ObjectId, 	    //待办事项UUID
+                             "careId" :String,	        //关怀的UUID
+                             "triggerId" :String,	    //触发todo生成的用户UUID
+                             "userId" :String,         //用户的UUID
+                             "userRole" : String,      //用户类型, c - b - s
+                             "type" :Number,           //待办事项类型:
+                             // a - apply friend好友申请;
+                             // p - payment付款;g - gathering收款;
+                             // fcf - first visit customer follow 首诊B首次评价后,C可关注B;
+                             // nro - notification read only只读通知;
+                             // fcr - first visit customer read doctor info 首诊家医确认后,客户待阅读通知
+                             // fbc - first visit family doctor confirm 首诊待家医确认(确认后显示EHR链接)
+                             // rcc - Referral Customer Confirm 转诊用户确认
+                             // rsc - Referral Specialist Confirm 转诊专家确认(建立channel-接受转诊-病历评论)
+                             // rbc - Referral Family Doctor Comment 等待B评价S
+                             "memo" :String,	          //说明、备注
+                             "processStage" :String,	  //代办事项处理阶段:
+                             // n - new新建初始状态; r - read已阅读;
+                             // c - confirm已处理完成; d - deny已拒绝; e -EHR已完成首次评价
+                             // cc - channel confirmed通道建立; cd - channel deny通道拒绝 ;
+                             // ra - referral accept转诊接受; rd - referral deny转诊拒绝;
+                             "isChannelExists": Boolean //新建待办时授权通道是否已存在, 只是在type为rsc的待办事项中存在!!
+                             "future" :Number,	        //生效、限制时差.部分待办事项需要(createdAt + future)=validatedTime
+                             "createdAt" :Number,	    //生成时间(UNIX timestamp)
+                             "updatedAt" :Number,   	//更新时间(UNIX timestamp)
+                             "countdown": Number,      //首诊、转诊倒计时由服务端计算
+                       }
+                   ]
+    }
+]
+</code>
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+}
+</code>
+
+==== 714 获取用户待办事项详情(By careId) ====
+* URI: /3/uers/:uuid/cares/:careId/todos
+* Method: GET
+* URI params:
+* Request payload:
+<code>
+{
+    "_id" : String,            // 待办事项的careId
+    "careType": String,           // careTodo initialType
+    "step": int,                  // 位于当前care流程步骤   100-已完成
+    "todoNum": int                // 未处理的待办数量
+    "customerId": String,         // 用户UUID
+    "familyDoctorId": String,     // 家医UUID
+    "specialistId": String,       // 专医UUID
+    "customerName": String,       // 用户姓名
+    "familyDoctorName": String,   // 家医姓名
+    "specialistName": String,     // 专医姓名
+    "createdAt": long,            // 创建时间
+    "updatedAt": long             // 最近更新时间
+    "todo":[
+               {
+                     "_id" : ObjectId, 	    //待办事项UUID
+                     "careId" :String,	        //关怀的UUID
+                     "triggerId" :String,	    //触发todo生成的用户UUID
+                     "userId" :String,         //用户的UUID
+                     "userRole" : String,      //用户类型, c - b - s
+                     "type" :Number,           //待办事项类型:
+                     // a - apply friend好友申请;
+                     // p - payment付款;g - gathering收款;
+                     // fcf - first visit customer follow 首诊B首次评价后,C可关注B;
+                     // nro - notification read only只读通知;
+                     // fcr - first visit customer read doctor info 首诊家医确认后,客户待阅读通知
+                     // fbc - first visit family doctor confirm 首诊待家医确认(确认后显示EHR链接)
+                     // rcc - Referral Customer Confirm 转诊用户确认
+                     // rsc - Referral Specialist Confirm 转诊专家确认(建立channel-接受转诊-病历评论)
+                     // rbc - Referral Family Doctor Comment 等待B评价S
+                     "memo" :String,	          //说明、备注
+                     "processStage" :String,	  //代办事项处理阶段:
+                     // n - new新建初始状态; r - read已阅读;
+                     // c - confirm已处理完成; d - deny已拒绝; e -EHR已完成首次评价
+                     // cc - channel confirmed通道建立; cd - channel deny通道拒绝 ;
+                     // ra - referral accept转诊接受; rd - referral deny转诊拒绝;
+                     "isChannelExists": Boolean //新建待办时授权通道是否已存在, 只是在type为rsc的待办事项中存在!!
+                     "future" :Number,	        //生效、限制时差.部分待办事项需要(createdAt + future)=validatedTime
+                     "createdAt" :Number,	    //生成时间(UNIX timestamp)
+                     "updatedAt" :Number,   	//更新时间(UNIX timestamp)
+                     "countdown": Number,      //首诊、转诊倒计时由服务端计算
+               }
+           ]
+}
+
+</code>
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+}
+</code>
+
+=== 8XX Relations ===
+
+==== 800 新建关系 ====
+* URI: /3/relations
+* Method: POST
+* URI params:
+* Response:
+
+==== 801 获取用户关系列表 ====
+* URI: /3/users/:uuid/relations
+* Method: GET
+* URI params:
+** type=type  关系类型: f-familyDoctor-我的家医; c-consumer-我的患者; r-referral-我的转诊通道; or-openReferral-我开放的转诊通道
+* Response:
+<code>
+//成功 200
+[//用户列表
+    {
+      //用户信息
+    },{},...
+]
+//失败
+  {
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+  }
+</code>
+
+==== 802 获取用户未读todo和关系数 ====
+* URI: /3/users/:uuid/numbers
+* Method: GET
+* URI params:
+* Response:
+<code>
+//成功 200
+{
+    "todo": 11,
+    "cTodo": 1,
+    "bTodo": 1,
+    "sTodo": 1,
+    "familyDoctor": 1,
+    "customer": 2,
+    "referral": 3,
+    "openReferral": 4
+}
+//失败
+{
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+}
+</code>
+
+==== 803 删除我的家医 ====
+* URI: /3/users/:uuid/myFamilyDoctors/:pid
+* Method: DELETE
+* URI params:
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+}
+</code>
+
+==== 804 删除我的患者 ====
+* URI: /3/users/:uuid/myCustomers/:pid
+* Method: DELETE
+* URI params:
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+}
+</code>
+
+==== 805 删除我的转诊通道 ====
+* URI: /3/users/:uuid/myReferrals/:pid
+* Method: DELETE
+* URI params:
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+}
+</code>
+
+==== 806 删除我的开发的转诊通道 ====
+* URI: /3/users/:uuid/myOpenReferrals/:pid
+* Method: DELETE
+* URI params:
+* Response:
+<code>
+//成功 200
+{}
+//失败
+{
+  "code" :Number,  //Error Code
+  "msg" :String    //Error Message
+}
+</code>
+
+== ChangeLog ==
+{|
+| '''Version'''
+| '''Date'''
+| '''Author'''
+| '''Comments'''
+| '''Reviewer'''
+|-
+| 7
+| 2014-09-02
+| Miao
+| 重构V2接口，修改Sprint20接口文档
+|
+|-
+| 6
+| 2014-09-02
+| Jacky
+| 新增Sprint20接口文档
+|
+|-
+| 5
+| 2014-08-25
+| Jacky
+| 修改Sprint19接口文档
+|
+|-
+| 4
+| 2014-08-19
+| Jacky
+| 修改Sprint18接口文档200、201、203、204、210、211、212、500、600、601
+|
+|-
+| 3
+| 2014-08-14
+| Miao
+| 添加Sprint17接口文档
+|
+|-
+| 2
+| 2014-08-14
+| Jacky
+| 整理API规范,整合部分API接口文档
+|
+|-
+| 1
+| 2014-08-06
+| Evan
+| API V3 规范化
+|
+|}
+
