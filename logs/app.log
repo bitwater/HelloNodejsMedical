@@ -1,97 +1,32 @@
-[2014-05-01 19:15:16.543] [WARN] console - connect.multipart() will be removed in connect 3.0
-[2014-05-01 19:15:16.545] [WARN] console - visit https://github.com/senchalabs/connect/wiki/Connect-3.0 for alternatives
-[2014-05-01 19:15:16.545] [WARN] console - connect.limit() will be removed in connect 3.0
-[2014-05-01 19:15:16.566] [INFO] server - Express server listening on port 3003
-[2014-05-01 19:15:16.566] [INFO] console - Express server listening on port 3003
-[2014-05-01 19:15:41.650] [INFO] server - GET /
-[2014-05-01 19:15:41.929] [INFO] server - GET /stylesheets/bootstrap.min.css
-[2014-05-01 19:15:41.930] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
-[2014-05-01 19:15:41.931] [INFO] server - GET /javascripts/bootstrap.min.js
-[2014-05-01 19:15:41.934] [INFO] server - GET /javascripts/doctor.js
-[2014-05-01 19:15:41.934] [INFO] server - GET /javascripts/jquery.json-2.4.js
-[2014-05-01 19:15:47.422] [INFO] server - GET /reg
-[2014-05-01 19:15:47.458] [INFO] server - GET /home
-[2014-05-01 19:15:47.634] [INFO] server - GET /stylesheets/bootstrap.min.css
-[2014-05-01 19:15:47.635] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
-[2014-05-01 19:15:47.639] [INFO] server - GET /javascripts/bootstrap.min.js
-[2014-05-01 19:15:47.640] [INFO] server - GET /javascripts/doctor.js
-[2014-05-01 19:15:47.641] [INFO] server - GET /javascripts/jquery.json-2.4.js
-[2014-05-01 19:15:54.290] [INFO] server - GET /
-[2014-05-01 19:15:54.469] [INFO] server - GET /stylesheets/bootstrap.min.css
-[2014-05-01 19:15:54.469] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
-[2014-05-01 19:15:54.469] [INFO] server - GET /javascripts/bootstrap.min.js
-[2014-05-01 19:15:54.470] [INFO] server - GET /javascripts/doctor.js
-[2014-05-01 19:15:54.470] [INFO] server - GET /javascripts/jquery.json-2.4.js
-[2014-05-01 19:15:56.387] [INFO] server - GET /home
-[2014-05-01 19:15:56.536] [INFO] server - GET /stylesheets/bootstrap.min.css
-[2014-05-01 19:15:56.546] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
-[2014-05-01 19:15:56.546] [INFO] server - GET /javascripts/bootstrap.min.js
-[2014-05-01 19:15:56.549] [INFO] server - GET /javascripts/doctor.js
-[2014-05-01 19:15:56.549] [INFO] server - GET /javascripts/jquery.json-2.4.js
-[2014-05-01 19:15:58.764] [INFO] daos.DoctorDao - promise find all
-[2014-05-01 19:15:58.848] [INFO] server - GET /doctor/query/
-[2014-05-01 19:16:01.905] [INFO] server - GET /
-[2014-05-01 19:16:02.086] [INFO] server - GET /stylesheets/bootstrap.min.css
-[2014-05-01 19:16:02.087] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
-[2014-05-01 19:16:02.091] [INFO] server - GET /javascripts/bootstrap.min.js
-[2014-05-01 19:16:02.092] [INFO] server - GET /javascripts/doctor.js
-[2014-05-01 19:16:02.093] [INFO] server - GET /javascripts/jquery.json-2.4.js
-[2014-05-01 19:16:44.560] [INFO] server - GET /logout
-[2014-05-01 19:16:44.567] [INFO] server - GET /
-[2014-05-01 19:16:44.838] [INFO] server - GET /stylesheets/bootstrap.min.css
-[2014-05-01 19:16:44.840] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
-[2014-05-01 19:16:44.843] [INFO] server - GET /javascripts/bootstrap.min.js
-[2014-05-01 19:16:44.844] [INFO] server - GET /javascripts/doctor.js
-[2014-05-01 19:16:44.845] [INFO] server - GET /javascripts/jquery.json-2.4.js
-[2014-05-01 19:17:19.470] [INFO] server - GET /reg
-[2014-05-01 19:17:19.734] [INFO] server - GET /stylesheets/bootstrap.min.css
-[2014-05-01 19:17:19.735] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
-[2014-05-01 19:17:19.741] [INFO] server - GET /javascripts/bootstrap.min.js
-[2014-05-01 19:17:19.742] [INFO] server - GET /javascripts/doctor.js
-[2014-05-01 19:17:19.742] [INFO] server - GET /javascripts/jquery.json-2.4.js
-[2014-05-01 19:17:28.377] [INFO] console - { name: 'a', password: 'kAFQmDzST7DWlj99KOF/cg==' }
-[2014-05-01 19:17:28.396] [INFO] server - POST /reg
-[2014-05-01 19:17:28.411] [INFO] server - GET /login
-[2014-05-01 19:17:28.583] [INFO] server - GET /stylesheets/bootstrap.min.css
-[2014-05-01 19:17:28.583] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
-[2014-05-01 19:17:28.584] [INFO] server - GET /javascripts/bootstrap.min.js
-[2014-05-01 19:17:28.584] [INFO] server - GET /javascripts/doctor.js
-[2014-05-01 19:17:28.585] [INFO] server - GET /javascripts/jquery.json-2.4.js
-[2014-05-01 19:17:36.509] [INFO] routes.user - undefined
-[2014-05-01 19:17:36.512] [INFO] routes.user - find this user{ name: 'a',
-  password: 'kAFQmDzST7DWlj99KOF/cg==',
-  _id: 53622d48a76c39fa17aa954d,
+[2014-07-04 09:39:13.761] [INFO] server - GET /
+[2014-07-04 09:39:13.994] [INFO] server - GET /stylesheets/bootstrap.min.css
+[2014-07-04 09:39:13.995] [INFO] server - GET /javascripts/doctor.js
+[2014-07-04 09:39:13.995] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
+[2014-07-04 09:39:13.996] [INFO] server - GET /javascripts/bootstrap.min.js
+[2014-07-04 09:39:13.996] [INFO] server - GET /javascripts/jquery.json-2.4.js
+[2014-07-04 09:39:17.408] [INFO] server - GET /login
+[2014-07-04 09:39:17.552] [INFO] server - GET /stylesheets/bootstrap.min.css
+[2014-07-04 09:39:17.553] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
+[2014-07-04 09:39:17.553] [INFO] server - GET /javascripts/bootstrap.min.js
+[2014-07-04 09:39:17.554] [INFO] server - GET /javascripts/doctor.js
+[2014-07-04 09:39:17.554] [INFO] server - GET /javascripts/jquery.json-2.4.js
+[2014-07-04 09:39:19.163] [INFO] routes.user - undefined
+[2014-07-04 09:39:19.174] [INFO] routes.user - find this user{ name: 'hello',
+  password: 'ICy5YqxZB1uWSwcVLSNLcA==',
+  _id: 53b4d244389c997e3e3d7e89,
   __v: 0,
-  create_date: Thu May 01 2014 19:17:28 GMT+0800 (CST) }
-[2014-05-01 19:17:36.514] [INFO] server - POST /login
-[2014-05-01 19:17:36.521] [INFO] server - GET /home
-[2014-05-01 19:17:36.777] [INFO] server - GET /stylesheets/bootstrap.min.css
-[2014-05-01 19:17:36.784] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
-[2014-05-01 19:17:36.790] [INFO] server - GET /javascripts/bootstrap.min.js
-[2014-05-01 19:17:36.792] [INFO] server - GET /javascripts/doctor.js
-[2014-05-01 19:17:36.794] [INFO] server - GET /javascripts/jquery.json-2.4.js
-[2014-05-01 19:19:16.619] [INFO] daos.DoctorDao - promise find all
-[2014-05-01 19:19:16.628] [INFO] server - GET /doctor/query/
-[2014-05-01 19:19:23.579] [INFO] daos.DoctorDao - promise find all
-[2014-05-01 19:19:23.586] [INFO] server - GET /doctor/query/
-[2014-05-01 19:19:39.616] [INFO] routes.doctor - undefined
-[2014-05-01 19:19:39.644] [ERROR] console - Error: ENOENT, no such file or directory '/home/norway/workspace/HelloNodejsMedical/views/header.ejs'
-    at Object.fs.openSync (fs.js:427:18)
-    at fs.readFileSync (fs.js:284:15)
-    at Object.exports.parse (/home/norway/workspace/HelloNodejsMedical/node_modules/ejs/lib/ejs.js:164:19)
-    at exports.compile (/home/norway/workspace/HelloNodejsMedical/node_modules/ejs/lib/ejs.js:229:15)
-    at Object.exports.render (/home/norway/workspace/HelloNodejsMedical/node_modules/ejs/lib/ejs.js:289:10)
-    at View.exports.renderFile [as engine] (/home/norway/workspace/HelloNodejsMedical/node_modules/ejs/lib/ejs.js:323:20)
-    at View.render (/home/norway/workspace/HelloNodejsMedical/node_modules/express/lib/view.js:76:8)
-    at Function.app.render (/home/norway/workspace/HelloNodejsMedical/node_modules/express/lib/application.js:504:10)
-    at ServerResponse.res.render (/home/norway/workspace/HelloNodejsMedical/node_modules/express/lib/response.js:798:7)
-    at exports.addDoctor (/home/norway/workspace/HelloNodejsMedical/routes/doctor.js:45:20)
-[2014-05-01 19:19:39.703] [INFO] server - GET /doctor/add
-[2014-05-01 19:19:49.774] [INFO] server - GET /member/show
-[2014-05-01 19:19:54.314] [INFO] routes.member - undefined
-[2014-05-01 19:19:54.344] [INFO] server - GET /member/add
-[2014-05-01 19:19:54.543] [INFO] server - GET /stylesheets/bootstrap.min.css
-[2014-05-01 19:19:54.553] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
-[2014-05-01 19:19:54.555] [INFO] server - GET /javascripts/bootstrap.min.js
-[2014-05-01 19:19:54.558] [INFO] server - GET /javascripts/jquery.json-2.4.js
-[2014-05-01 19:19:54.563] [INFO] server - GET /javascripts/member.js
+  create_date: Thu Jul 03 2014 11:47:16 GMT+0800 (CST) }
+[2014-07-04 09:39:19.176] [INFO] server - POST /login
+[2014-07-04 09:39:19.184] [INFO] server - GET /home
+[2014-07-04 09:39:19.309] [INFO] server - GET /stylesheets/bootstrap.min.css
+[2014-07-04 09:39:19.309] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
+[2014-07-04 09:39:19.309] [INFO] server - GET /javascripts/bootstrap.min.js
+[2014-07-04 09:39:19.313] [INFO] server - GET /javascripts/doctor.js
+[2014-07-04 09:39:19.313] [INFO] server - GET /javascripts/jquery.json-2.4.js
+[2014-07-04 09:39:21.457] [INFO] routes.doctor - undefined
+[2014-07-04 09:39:21.461] [INFO] server - GET /doctor/add
+[2014-07-04 09:39:21.563] [INFO] server - GET /stylesheets/bootstrap.min.css
+[2014-07-04 09:39:21.563] [INFO] server - GET /javascripts/jquery-1.9.1.min.js
+[2014-07-04 09:39:21.564] [INFO] server - GET /javascripts/bootstrap.min.js
+[2014-07-04 09:39:21.564] [INFO] server - GET /javascripts/doctor.js
+[2014-07-04 09:39:21.570] [INFO] server - GET /javascripts/jquery.json-2.4.js

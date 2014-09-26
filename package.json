@@ -6,12 +6,13 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "3.5.1",
-    "ejs": "*",
     "connect-mongo": "*",
-    "mongoose": "*",
-    "session-mongoose": "*",
+    "ejs": "*",
+    "express": "3.5.1",
     "log4js": "*",
-    "q": "^1.0.1"
+    "moment": "^2.6.0",
+    "mongoose": "*",
+    "q": "^1.0.1",
+    "session-mongoose": "*"
   }
 }

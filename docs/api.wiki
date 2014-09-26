@@ -189,12 +189,12 @@ The relative path prefix /3/ indicates that we are currently using version 3 of 
 
 对于所有的请求的响应格式都是一个 JSON 对象.
 一个请求是否成功是由 HTTP 状态码标明的. 一个 2XX 的状态码表示成功, 而一个 4XX 表示请求失败. 当一个请求失败时响应的主体仍然是一个 JSON 对象, 但是总是会包含 code 和 error 这两个字段, 您可以用它们来进行 debug. 举个例子, 如果尝试用不允许的 key 来保存一个对象会得到如下信息:
-<code>
+<source>
 {
   "code" : xxx,
   "error" : "xxxx"
 }
-</code>
+</source>
 
 '''Cares (1xx)'''
 
@@ -542,7 +542,7 @@ The payload JSON could be of one of the following data structures.
 
 '''A cheque'''
 待收款的支票
-<code>
+<source>
 {
   "type" : 'c'                       //必需,care当前类型:c - cheque待收款项目;
   "price" : 100,                     //必需,资源定价
@@ -556,7 +556,7 @@ The payload JSON could be of one of the following data structures.
   "specialistAgentName" : String,    //必需,经纪人姓名
   "specialistAgentPhoneNum" : String //必需,经纪人手机号
 }
-</code>
+</source>
 
 '''A bill'''
 待付款的账单
@@ -619,7 +619,7 @@ When you're about to update a care, you may end up with the following possible a
 * Method: POST
 * Params:
 * Request payload: A resource
-<code>
+<source>
 {
    "price": 222,                                    //资源定价
    "timeBegin": 1408098600000,                      //资源开放的开始时间(UNIX时间戳)
@@ -629,9 +629,9 @@ When you're about to update a care, you may end up with the following possible a
    "specialistId": "53d066a1f11ffd3d2901f3da",      //专家医生的UUID
    "specialistAgentId": "53df24da619b8703432d20a6", //经纪人UUID
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -639,7 +639,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 101.查看资源列表 ====
 * URI: /3/resources
@@ -648,7 +648,7 @@ When you're about to update a care, you may end up with the following possible a
 * Request payload: {}
 * Payload validation:
 * Response payload:
-<code>
+<source>
 [//资源列表
     {
        "price": 222,                                    //资源定价
@@ -665,7 +665,7 @@ When you're about to update a care, you may end up with the following possible a
        "type": 'r'                                      //care当前类型:'r'-resource 资源
     },{},...
 ]
-</code>
+</source>
 
 ==== 102.查看用户发布资源列表 ====
 * URI: /3/users/:uuid/resources
@@ -674,7 +674,7 @@ When you're about to update a care, you may end up with the following possible a
 ** type=a/r/o  :  a-available-有效资源;r-resource-未预约和过期资源；o-order-已预约和已完成资源
 ** sort=a/d    :  a-asc-按开始时间升序;d-desc-按开始时间降序
 * Response payload:
-<code>
+<source>
 [
 //资源列表
     {
@@ -692,23 +692,23 @@ When you're about to update a care, you may end up with the following possible a
        "type": 'r'                                      //care当前类型:'r'-resource 资源
     },{},...
 ]
-</code>
+</source>
 
 ==== 103.家医申请转诊 ====
 * URI: /3/actions/applyReferral
 * Method: PUT
 * Params:
 * Request payload:
-<code>
+<source>
 {
     "careId": String,
     "familyDoctorId": String,
     "customerId": String,
     "tags": [String]          //搜索匹配专医资源的字段
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -716,21 +716,21 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 104.会员确认转诊 ====
 * URI: /3/actions/cConfirmReferral
 * Method: PUT
 * Params:
 * Request payload:
-<code>
+<source>
 {
     "todoId": String,
     "tags": [String]  //患者修改确认后的转诊病情信息
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -738,20 +738,20 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 105.会员拒绝转诊 ====
 * URI: /3/actions/cRejectReferral
 * Method: PUT
 * Params:
 * Request payload:
-<code>
+<source>
 {
     "todoId": String
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -759,7 +759,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 106.删除某个资源 ====
 
@@ -767,7 +767,7 @@ When you're about to update a care, you may end up with the following possible a
 * Method: DELETE
 * Params:
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -775,7 +775,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 110.发起付款请求 ====
 * URI: /3/checks
@@ -783,7 +783,7 @@ When you're about to update a care, you may end up with the following possible a
 * Params:
 * Request payload:
 * Request payload:
-<code>
+<source>
 //成功 200
 {
    "price": 100,                //资源定价
@@ -792,22 +792,22 @@ When you're about to update a care, you may end up with the following possible a
    "familyDoctorId": String,    //家庭医生UUID
    "customerAgentId": String,     //主任UUID
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //失败
 {
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 111.查找用户付款请求列表 ====
 * URI: /3/users/:uuid/checks
 * Method: GET
 * Params:
 ** type=b/c/cc  :  b-待我付款(对方发起的收款);c-我发起的付款(待对方确认);cc-我完成的付款
-<code>
+<source>
 {
    "price": 100,                //资源定价
    "customerId": String,        //顾客UUID
@@ -824,7 +824,7 @@ When you're about to update a care, you may end up with the following possible a
    "customerAgentPhoneNum": String, //主任手机号
    "type": 'c'                  //care当前类型
 }
-</code>
+</source>
 * Response payload:
 
 ==== 112.查找某笔付款请求 ====
@@ -832,7 +832,7 @@ When you're about to update a care, you may end up with the following possible a
 * Method: GET
 * Params:
 * Response payload:
-<code>
+<source>
 {
    "price": 100,                //资源定价
    "customerId": String,        //顾客UUID
@@ -850,21 +850,21 @@ When you're about to update a care, you may end up with the following possible a
    "type": 'c'                  //care当前类型
    "initialType": 'cc'          //care的初始化类型
 }
-</code>
+</source>
 ==== 113.确认某笔付款请求 ====
 * URI: /3/actions/collectCheck
 * Method: PUT
 * Params:
 * Request payload:
-<code>
+<source>
 {
     "careId": String,
     "specialistAgentId": String,      //专家医生的UUID
 }
-</code>
+</source>
 * Payload validation:
 * Response payload:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -872,24 +872,24 @@ When you're about to update a care, you may end up with the following possible a
     "code" :Number,  //Error Code
     "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 120.发起收款请求 ====
 * URI: /3/bills
 * Method: POST
 * Params:
 * Request payload:
-<code>
+<source>
 {
    "price": 100,                //资源定价
    "customerId": String,        //顾客UUID
    "specialistId": String,      //专家医生的UUID
    "specialistAgentId": String, //经纪人UUID
 }
-</code>
+</source>
 * Payload validation:
 * Response payload:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -897,7 +897,7 @@ When you're about to update a care, you may end up with the following possible a
     "code" :Number,  //Error Code
     "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 121.查找用户收款请求列表 ====
 * URI: /3/users/:uuid/bills
@@ -907,7 +907,7 @@ When you're about to update a care, you may end up with the following possible a
 * Request payload:
 * Payload validation:
 * Response payload:
-<code>
+<source>
 {
    "price": 100,                //资源定价
    "customerId": String,        //顾客UUID
@@ -925,7 +925,7 @@ When you're about to update a care, you may end up with the following possible a
    "type": 'c'                  //care当前类型
    "initialType": 'cc'          //care的初始化类型
 }
-</code>
+</source>
 
 ==== 122.查找某笔收款请求 ====
 * URI: /3/bills/:uuid/
@@ -940,16 +940,16 @@ When you're about to update a care, you may end up with the following possible a
 * Method: PUT
 * Params:
 * Request payload:
-<code>
+<source>
 {
    "careId": String
    "familyDoctorId": String,        //家医UUID
    "customerAgentId": String,      //主任UUID
 }
-</code>
+</source>
 * Payload validation:
 * Response payload:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -957,14 +957,14 @@ When you're about to update a care, you may end up with the following possible a
     "code" :Number,  //Error Code
     "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 130.新增care首诊记录 ====
 * URI: /3/firstVisit
 * Method: POST
 * Params:
 * Request payload:
-<code>
+<source>
 //A resource
 {...}
 //A cheque
@@ -979,9 +979,9 @@ When you're about to update a care, you may end up with the following possible a
    "ctags" : String[]         //可选, 备注、说明;需求标签
 }
 
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -989,7 +989,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 131.查看care记录列表 ====
 * URI: /3/cares
@@ -1006,7 +1006,7 @@ When you're about to update a care, you may end up with the following possible a
 * Request payload: {}
 * Payload validation: 必需字段的存在性检查，以及当前type的正确性
 * Response:
-<code>
+<source>
  {
    "createdAt":number
    "_id": string,
@@ -1029,7 +1029,7 @@ When you're about to update a care, you may end up with the following possible a
                ]
            }]
  }
-</code>
+</source>
 
 ==== 133.修改care记录 ====
 * URI: /3/cares/:uuid
@@ -1045,7 +1045,7 @@ When you're about to update a care, you may end up with the following possible a
 * Params:
 * Request payload: 
 * Response:
-<code>
+<source>
 //成功 200
   [{
    "taggerId":string,	//打标签的用户UUID
@@ -1058,23 +1058,23 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 135.首诊家医评价用户,为care添加EHR标签 ====
 * URI: /3/cares/:uuid/bcehrs
 * Method: POST
 * Params:
 * Request payload:
-<code>
+<source>
  {
    "taggerId":string,	//打标签的用户UUID
    "userId":String,     //被打标签的用户UUID
    "tags":string[] 	   //类型
  }
-</code>
+</source>
 * Payload validation: 必需字段的存在性检查，以及当前type的正确性
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -1082,14 +1082,14 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 136.查看用户的care记录及EHR子文档 ====
 * URI: /3/users/:uuid/ehrs
 * Method: POST
 * Params:
 * Request payload:
-<code>
+<source>
  {
    "createdAt":number
    "_id": string,
@@ -1110,7 +1110,7 @@ When you're about to update a care, you may end up with the following possible a
                ]
            }]
  }
-</code>
+</source>
 * Payload validation: 必需字段的存在性检查，以及当前type的正确性
 * Response:
 
@@ -1119,16 +1119,16 @@ When you're about to update a care, you may end up with the following possible a
 * Method: POST
 * Params:
 * Request payload:
-<code>
+<source>
  {
    "taggerId":string,	//打标签的用户UUID
    "userId":String,     //被打标签的用户UUID
    "tags":string[] 	   //类型
  }
-</code>
+</source>
 * Payload validation: 必需字段的存在性检查，以及当前type的正确性
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -1136,23 +1136,23 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 138.转诊专医评价用户,为care添加EHR标签 ====
 * URI: /3/cares/:uuid/scehrs
 * Method: POST
 * Params:
 * Request payload:
-<code>
+<source>
  {
    "taggerId":string,	//打标签的用户UUID
    "userId":String,     //被打标签的用户UUID
    "tags":string[] 	   //类型
  }
-</code>
+</source>
 * Payload validation: 必需字段的存在性检查，以及当前type的正确性
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -1160,23 +1160,23 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 139.客户为自己添加主诉,为care添加EHR标签 ====
 * URI: /3/cares/:uuid/ccehrs
 * Method: POST
 * Params:
 * Request payload:
-<code>
+<source>
  {
    "taggerId":string,	//打标签的用户UUID
    "userId":String,     //被打标签的用户UUID
    "tags":string[] 	   //类型
  }
-</code>
+</source>
 * Payload validation: 必需字段的存在性检查，以及当前type的正确性
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -1184,7 +1184,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 === 2XX Users ===
 
@@ -1192,7 +1192,7 @@ When you're about to update a care, you may end up with the following possible a
 * URI: /3/users
 * Method: POST
 * Request payload:
-<code>
+<source>
 {
   "name" : String,                  //必需,姓名
   "sex" : String,                   //必需,性别
@@ -1205,9 +1205,9 @@ When you're about to update a care, you may end up with the following possible a
   "customerAgentName" : String,     //非必需,主任姓名
   "customerAgentPhoneNum" : String, //非必需,主任手机号
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 201
   {}
 //失败
@@ -1215,7 +1215,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 201.查看用户列表 ====
 * URI: /3/users
@@ -1227,7 +1227,7 @@ When you're about to update a care, you may end up with the following possible a
 ** isFd: t/f - 查询是否为家医
 ** isAvailable: t/f - 当前是否在线
 * Response:
-<code>
+<source>
 //成功 200
   [//用户列表
     {
@@ -1239,14 +1239,14 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 202.查询一个用户 ====
 * URI: /3/users/:uuid
 * Method: GET
 * URI params:
 * Response:
-<code>
+<source>
 //成功 200
   {//用户信息
    "_id" :String,                     //用户编号UUID
@@ -1280,13 +1280,13 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 203.用户从医资格提交认证 ====
 * URI: /3/users/:uuid/specialistVerify
 * Method: PUT
 * Request payload:
-<code>
+<source>
 {
   "visitAddress" : String,             //可选,首诊地址
   "visitAddressGPS" : [Number, Number],//可选,首诊地址的经纬度
@@ -1300,9 +1300,9 @@ When you're about to update a care, you may end up with the following possible a
   "specialistAgentName" : String,      //经纪人姓名
   "specialistAgentPhoneNum" : String   //经纪人手机号
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -1310,20 +1310,20 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 204.用户从医资格审核 ====
 * URI: /3/users/:uuid/medicalAuth
 * Method: PUT
 * Request payload:
-<code>
+<source>
 {
   "authMessage" : String, //可选,认证反馈信息
   "authState" : Boolean   //必填,认证状态, 成功/失败
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -1331,13 +1331,13 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 205. 更新用户的专家信息====
 * URI: /3/users/:uuid/specialistInfo
 * Method: PUT
 * Request payload:
-<code>
+<source>
 {
   "isFamilyDoctor" : Boolean,          //可选,家医开关
   "visitAddress" : String,             //可选,首诊地址
@@ -1352,9 +1352,9 @@ When you're about to update a care, you may end up with the following possible a
   "specialistAgentName" : String,      //经纪人姓名
   "specialistAgentPhoneNum" : String   //经纪人手机号
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -1362,22 +1362,22 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 207.更改用户的基本信息 ====
 * URI: /3/users/:uuid/profile
 * Method: PUT
 * Params:
 * Request payload:
-<code>
+<source>
 {
   "customerAgentId" : String          //介绍人ID
   "cTags" : [String]                  //用户标签
 }
-</code>
+</source>
 * Payload validation:
 * Response payload:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -1385,14 +1385,14 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 208.更新用户的家医信息 ====
 * URI: /3/users/:uuid/familyDoctorInfo
 * Method: PUT
 * Params:
 * Request payload:
-<code>
+<source>
 {
   "visitAddress" : String,             //可选,首诊地址
   "visitAddressGPS" : [Number, Number],//可选,首诊地址的经纬度
@@ -1400,9 +1400,9 @@ When you're about to update a care, you may end up with the following possible a
   "isAvailable" : Boolean              //可选,在线开关
   "isFamilyDoctor" : Boolean           //可选,家医开关
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -1410,22 +1410,22 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 209.更改用户密码 ====
 * URI: /3/users/:uuid/password
 * Method: PUT
 * Params:
 * Request payload:
-<code>
+<source>
 {
   "pwd" : String               //原密码
   "oldpwd" : [String]          //旧密码
 }
-</code>
+</source>
 * Payload validation:
 * Response payload:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -1433,7 +1433,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 
 ==== 210.登陆 ====
@@ -1443,7 +1443,7 @@ When you're about to update a care, you may end up with the following possible a
 ** username=:phoneNum //手机号
 ** password=MD5(:password) //MD5后的密码
 * Response:
-<code>
+<source>
 //成功 200
   {
    "_id" : String,            //用户UUID
@@ -1464,19 +1464,19 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 211.获取验证码 ====
 * URI: /authCode
 * Method: POST
 * Request payload:
-<code>
+<source>
 {
   "phoneNum" :String   //必需,申请验证码的手机号
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {
    "uuid" : "String"  //验证码的唯一编号,验证时需要
@@ -1486,20 +1486,20 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 212.核对验证码 ====
 * URI: /3/actions/verifyAuthCode
 * Method: PUT
 * Request payload:
-<code>
+<source>
 { 
   "uuid" : String,     //必需,申请验证码的UUID
   "authCode" : String  //必需,申请验证码的UUID
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -1507,7 +1507,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 213.退出 ====
 * URI: /3/logout
@@ -1515,7 +1515,7 @@ When you're about to update a care, you may end up with the following possible a
 * URI params:
 ** uuid=:uuid //用户
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -1523,20 +1523,20 @@ When you're about to update a care, you may end up with the following possible a
     "code" :Number,  //Error Code
     "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 214.绑定pushId ====
 * URI: /3/actions/bindPushId
 * Method: PUT
 * Request payload:
-<code>
+<source>
 {
   "userId" : String,      //必需,用户的UUID
   "baiduPushId" : String  //必需，baiduPush的UUID
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -1544,7 +1544,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 === 3XX Transactions ===
 ==== 301.查询用户的财务状况(收入、支出、冻结) ====
@@ -1554,7 +1554,7 @@ When you're about to update a care, you may end up with the following possible a
 * Request payload:
 * Payload validation:
 * Response payload:
-<code>
+<source>
 //成功 200
 {
    "amount": Number,         //余额
@@ -1567,7 +1567,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 302.查询用户收支详情 ====
 * URI: /3/users/:uuid/balances
@@ -1576,7 +1576,7 @@ When you're about to update a care, you may end up with the following possible a
 * Request payload:
 * Payload validation:
 * Response payload:
-<code>
+<source>
 //成功 200
 [
    {
@@ -1596,7 +1596,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 303.查询用户收入详情 ====
 * URI: /3/users/:uuid/earnings
@@ -1605,7 +1605,7 @@ When you're about to update a care, you may end up with the following possible a
 * Request payload:
 * Payload validation:
 * Response payload:
-<code>
+<source>
 //成功 200
 [
    {
@@ -1625,7 +1625,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 304.查询用户支出详情 ====
 * URI: /3/users/:uuid/spendings
@@ -1634,7 +1634,7 @@ When you're about to update a care, you may end up with the following possible a
 * Request payload:
 * Payload validation:
 * Response payload:
-<code>
+<source>
 //成功 200
 [
    {
@@ -1654,7 +1654,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 305.查询用户锁定交易列表 ====
 * URI: /3/users/:uuid/lockeds
@@ -1663,7 +1663,7 @@ When you're about to update a care, you may end up with the following possible a
 * Request payload:
 * Payload validation:
 * Response payload:
-<code>
+<source>
 //成功 200
 [
    {
@@ -1684,7 +1684,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 306.查询用户锁定交易详情 ====
 * URI: /3/cares/:uuid/lockedDetail
@@ -1694,7 +1694,7 @@ When you're about to update a care, you may end up with the following possible a
 * Request payload:
 * Payload validation:
 * Response payload:
-<code>
+<source>
 //成功 200
 {
     "title": "看病冻结",
@@ -1705,7 +1705,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 
 ==== 315.获取自动解锁的交易信息,并新建代办事项 ====
@@ -1716,7 +1716,7 @@ When you're about to update a care, you may end up with the following possible a
 * Request payload:
 * Payload validation:
 * Response payload:
-<code>
+<source>
 //成功 200
 [
   {
@@ -1734,7 +1734,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
 }
-</code>
+</source>
 
 
 === 4XX Tags ===
@@ -1743,34 +1743,34 @@ When you're about to update a care, you may end up with the following possible a
 * URI: /3/tags
 * Method: GET
 * Response:
-<code>
+<source>
 {
   "tag" : String,   //标签
   "count" : Number  //频数
 }
-</code>
+</source>
 
 ==== 401 查询用户cTags ====
 * URI: /users/:uuid/cTags
 * Method: GET
 * Response:
-<code>
+<source>
 {
   "_id" : String,     //id
   "cTags" : [String]  //用户标签
 }
-</code>
+</source>
 
 ==== 402 查询用户sTags ====
 * URI: /users/:uuid/sTags
 * Method: GET
 * Response:
-<code>
+<source>
 {
   "_id" : String,     //id
   "cTags" : [String]  //专业标签
 }
-</code>
+</source>
 
 
 === 5XX Search ===
@@ -1786,7 +1786,7 @@ When you're about to update a care, you may end up with the following possible a
 ** lat: 纬度，例如北京唯独 39.9139
 ** type: ce-转诊通道已建立; cne-转诊通道未建立;
 * Response:
-<code>
+<source>
 //成功 200
   [
     {
@@ -1810,7 +1810,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 === 6XX Server Common ===
 
@@ -1818,7 +1818,7 @@ When you're about to update a care, you may end up with the following possible a
 * URI: /3/cdn
 * Method: GET
 * Response:
-<code>
+<source>
 //成功 200
   {
    "uri" : String,        //CDN Server的地址
@@ -1831,7 +1831,7 @@ When you're about to update a care, you may end up with the following possible a
    "code" :Number,  //Error Code
    "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 601 获取安装软件版本信息 ====
 * URI: /3/versions
@@ -1840,7 +1840,7 @@ When you're about to update a care, you may end up with the following possible a
 ** app : app name       指定app
 ** pf : platform   指定平台
 * Response:
-<code>
+<source>
 //成功 200
   {
   "v" :Number,   //当前版本号
@@ -1851,7 +1851,7 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
   }
-</code>
+</source>
 
 === 7XX Todos ===
 
@@ -1869,7 +1869,7 @@ When you're about to update a care, you may end up with the following possible a
 ** type=type  代办事项类型
 ** role=c/b/s 用户类型, c - b - s
 * Response:
-<code>
+<source>
 //成功 200
 [//待办事项列表
   {
@@ -1904,14 +1904,14 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 702 获取待办事项详细信息 ====
 * URI: /3/todos/:uuid
 * Method: GET
 * URI params:
 * Response:
-<code>
+<source>
 //成功 200
   {
     "_id" : ObjectId, 	      //待办事项UUID
@@ -1944,14 +1944,14 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 703 修改待办事项 ====
 * URI: /3/todos/:uuid
 * Method: PUT
 * URI params:
 * Request payload:
-<code>
+<source>
 //阅读代办事项
 {
   "processStage" : "r", //必选,已阅读
@@ -1969,9 +1969,9 @@ When you're about to update a care, you may end up with the following possible a
   "processStage" : "e",  //必选,EHR
   "tags" :String[]       //必选,EHR
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -1979,21 +1979,21 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 704 阅读待办事项 ====
 * URI: /3/actions/readNotification
 * Method: PUT
 * URI params:
 * Request payload:
-<code>
+<source>
 //阅读代办事项
 {
   "uuid" : String, //必选,待办事项的UUID
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -2001,21 +2001,21 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 705 接受首诊预约 ====
 * URI: /3/actions/acceptFirstVisit
 * Method: PUT
 * URI params:
 * Request payload:
-<code>
+<source>
 //接受首诊预约待办事项
 {
   "uuid" : String, //必选,待办事项的UUID
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
 //失败
@@ -2023,22 +2023,22 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 706 为首诊Care添加EHR ====
 * URI: /3/actions/addEhr
 * Method: PUT
 * URI params:
 * Request payload:
-<code>
+<source>
 //为代办事项添加EHR
 {
   "uuid" : String,          //必选,待办事项的UUID
   "tags" :String[]       //必选,EHR对应的tags
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -2046,84 +2046,84 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 707 客户添加家医关注 ====
 * URI: /3/actions/addCustomerFollow
 * Method: PUT
 * URI params:
 * Request payload:
-<code>
+<source>
 {
   "uuid" : String,          //必选,待办事项的UUID
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
-</code>
+</source>
 
 ==== 708 转诊-专医接受通道申请 ====
 * URI: /3/actions/acceptRefChannel
 * Method: PUT
 * URI params:
 * Request payload:
-<code>
+<source>
 {
   "uuid" : String,          //必选,待办事项的UUID
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
-</code>
+</source>
 
 ==== 709 转诊-专医拒绝通道申请 ====
 * URI: /3/actions/rejectRefChannel
 * Method: PUT
 * URI params:
 * Request payload:
-<code>
+<source>
 {
   "uuid" : String,          //必选,待办事项的UUID
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
-</code>
+</source>
 
 ==== 710 转诊-专医接受转诊申请 ====
 * URI: /3/actions/acceptReferral
 * Method: PUT
 * URI params:
 * Request payload:
-<code>
+<source>
 {
   "uuid" : String,          //必选,待办事项的UUID
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
-</code>
+</source>
 
 ==== 711 转诊-专医拒绝转诊申请 ====
 * URI: /3/actions/rejectReferral
 * Method: PUT
 * URI params:
 * Request payload:
-<code>
+<source>
 {
   "uuid" : String,          //必选,待办事项的UUID
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
   {}
 {}
@@ -2132,21 +2132,21 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 712 根据care批量阅读待办事项 ====
 * URI: /3/actions/readNotificationByCare
 * Method: PUT
 * URI params:
 * Request payload:
-<code>
+<source>
 //阅读代办事项
 {
   "careId" : String, //必选,待办事项的careId
 }
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -2154,14 +2154,14 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 713 获取用户待办care列表（根据care折叠） ====
 * URI: /3/uers/:uuid/cares
 * Method: GET
 * URI params:
 * Request payload:
-<code>
+<source>
 [
     {
         "_id" : String,               // 待办事项的careId
@@ -2209,9 +2209,9 @@ When you're about to update a care, you may end up with the following possible a
                    ]
     }
 ]
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -2219,14 +2219,14 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 714 获取用户待办事项详情(By careId) ====
 * URI: /3/uers/:uuid/cares/:careId/todos
 * Method: GET
 * URI params:
 * Request payload:
-<code>
+<source>
 {
     "_id" : String,            // 待办事项的careId
     "careType": String,           // careTodo initialType
@@ -2272,9 +2272,9 @@ When you're about to update a care, you may end up with the following possible a
            ]
 }
 
-</code>
+</source>
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -2282,7 +2282,7 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
 }
-</code>
+</source>
 
 === 8XX Relations ===
 
@@ -2298,7 +2298,7 @@ When you're about to update a care, you may end up with the following possible a
 * URI params:
 ** type=type  关系类型: f-familyDoctor-我的家医; c-consumer-我的患者; r-referral-我的转诊通道; or-openReferral-我开放的转诊通道
 * Response:
-<code>
+<source>
 //成功 200
 [//用户列表
     {
@@ -2310,14 +2310,14 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
   }
-</code>
+</source>
 
 ==== 802 获取用户未读todo和关系数 ====
 * URI: /3/users/:uuid/numbers
 * Method: GET
 * URI params:
 * Response:
-<code>
+<source>
 //成功 200
 {
     "todo": 11,
@@ -2334,14 +2334,14 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 803 删除我的家医 ====
 * URI: /3/users/:uuid/myFamilyDoctors/:pid
 * Method: DELETE
 * URI params:
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -2349,14 +2349,14 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 804 删除我的患者 ====
 * URI: /3/users/:uuid/myCustomers/:pid
 * Method: DELETE
 * URI params:
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -2364,14 +2364,14 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 805 删除我的转诊通道 ====
 * URI: /3/users/:uuid/myReferrals/:pid
 * Method: DELETE
 * URI params:
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -2379,14 +2379,14 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
 }
-</code>
+</source>
 
 ==== 806 删除我的开发的转诊通道 ====
 * URI: /3/users/:uuid/myOpenReferrals/:pid
 * Method: DELETE
 * URI params:
 * Response:
-<code>
+<source>
 //成功 200
 {}
 //失败
@@ -2394,7 +2394,7 @@ When you're about to update a care, you may end up with the following possible a
   "code" :Number,  //Error Code
   "msg" :String    //Error Message
 }
-</code>
+</source>
 
 == ChangeLog ==
 {|
